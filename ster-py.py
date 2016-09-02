@@ -5,12 +5,10 @@ import click
 import urllib2
 import urllib
 import webbrowser
-import os
 from appdirs import *
 import time as timelib
 from clint.textui import colored, puts, indent
 
-clear = lambda: os.system('cls')
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 cinema_array = []
 save_directory = AppDirs("sterpy")
@@ -100,7 +98,8 @@ def print_all_movies(movies_array):
         for cinema_id in cinema_array:
             if cinema_id.i in movie.a:
                 cinema_availability.append(cinema_id.n)
-        print 'Movie: ', [index], '\n\t', movie.n, '\n\t', movie.i, \
+        print 'Movie: ', [index], '\n\t', movie.n, '\n\t', movie.i,
+
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     count = 0
@@ -263,6 +262,7 @@ def imdb_search(movie_name):
         return float(first_match['rating'])
     except:
         return 0
+
 
 @greet.command()
 @click.argument('cinema')
