@@ -33,7 +33,7 @@ class CinemaObject:
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version='1.0.0')
+@click.version_option(version='0.1.0')
 def greet():
     """Flash sucks, CLI doesn't!"""
     check_update_xml()
