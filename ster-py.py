@@ -74,7 +74,6 @@ def xml_parse_movie():
                         coming_soon = 0
                 else:
                     pass
-        # print_all_movies(movies_array)
         return movies_array
 
 
@@ -84,7 +83,6 @@ def xml_parse_cinema():
     cinema_id = ''
     with open(cinema_location, 'rt') as f:
         tree = ElementTree.parse(f)
-    # root = tree.getroot()
     for cinema in tree.iter(tag='cinemas'):
         for cine_num in cinema.getchildren():
             for node in cine_num.getchildren():
@@ -94,7 +92,6 @@ def xml_parse_cinema():
                     cinema_name = node.text
                     cinema = CinemaObject(cinema_name, cinema_id)
                     cinema_array.append(cinema)
-                    # print 'xdone'
 
 
 def print_all_movies(movies_array):
@@ -104,14 +101,10 @@ def print_all_movies(movies_array):
             if cinema_id.i in movie.a:
                 cinema_availability.append(cinema_id.n)
         print 'Movie: ', [index], '\n\t', movie.n, '\n\t', movie.i, \
-            # '\n\tCinemas: ', cinema_availability
-
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     count = 0
-    # tags = ' '
     movies_array = xml_parse_movie()
-    # pairs = {}
     print_movies_array = []
 
     print ''
@@ -120,7 +113,6 @@ def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
 
     for movie in movies_array:
         if cinema_id in movie.a:
-            # pairs[count + 1] = movie.i
             print_movies_array.append(movie)
             count += 1
     if imdb_sort:
@@ -148,10 +140,8 @@ def print_movies(movie_array, imdb_sort):
             print [count + 1], '--', movie.n,
             if movie.t is not None:
                 tags = string.translate(str(movie.t), None, "'")
-                # print [count + 1], '--', movie.n, tags
                 print tags
             else:
-                # print [count + 1], '--', movie.n,
                 print ''
             count += 1
     else:
@@ -162,7 +152,6 @@ def print_movies(movie_array, imdb_sort):
                 tags = string.translate(str(movie.t), None, "'")
                 print tags
             else:
-                # print '  ', [count + 1], '--', movie.n
                 print ''
             count += 1
     print ''
@@ -226,8 +215,6 @@ def get_performances(movie_id, cinema_id):
         movie_times = ', '.join(map(str, date[index][1:]))
         with indent(7):
             puts(colored.green(str(movie_times)))
-    # open_page = click.prompt("Want to open the sterkinekor booking page?")
-    # if open_page:
     if click.confirm('Do you want to open the booking page?'):
         webbrowser.open("http://www.sterkinekor.com/#/book/%s" % movie_id, new=0, autoraise=True)
 
@@ -236,7 +223,6 @@ def check_update_xml():
     # TODO alternatively just download HASHcheckXML and compare that with old. This could update unnecessarily tho
     online_movie_md5 = ''
     local_movie_md5 = ''
-    # Or is not modified since 24H
     if not os.path.isdir(save_directory.user_cache_dir):
         print "yes it's empty"
         os.makedirs(save_directory.user_cache_dir)
@@ -292,10 +278,4 @@ def checkcinema(**kwargs):
 
 
 if __name__ == "__main__":
-    # check_update_xml()
-    # greet()
-    # imdb_search()
-    # xml_parse_cinema()
-    # xml_parse_movie()
-    # print_movies_per_cinema('11', 'Rosbeank Zone', True)
     greet()
