@@ -77,7 +77,6 @@ def xml_parse_movie():
 
 def xml_parse_cinema():
     global cinema_array
-    cinema_name = ''
     cinema_id = ''
     with open(cinema_location, 'rt') as f:
         tree = ElementTree.parse(f)
@@ -176,7 +175,6 @@ def search_movies_from_cinema(cinema_search, imdb_sort):
 
 def get_tags(word):
     tags = []
-    stripped_word = ' '
     if word.find('IMAX 3D - ') > -1:
         tags.append('IMAX')
         tags.append('3D')
