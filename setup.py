@@ -6,14 +6,19 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
+try:
+    from pypandoc import convert
+
+    read_md = lambda f: convert(f, 'rst')
+except ImportError:
+    print("warning: pypandoc module not found, could not convert Markdown to RST")
+    read_md = lambda f: open(f, 'r').read()
 
 setup(
     name='ster-py',
     version='1.0.0',
-    description='A python cli based sterkinekor browser',
-    long_description=long_description,
+    description='A python cli based sterkinekor browser, whatever, it needed to be done.',
+    long_description=read_md('README.md'),
     url='https://github.com/spookyUnknownUser/ster-py',
     author='spookyUnknownUser',
     author_email='spookyUnknownUser@users.noreply.github.com@',
