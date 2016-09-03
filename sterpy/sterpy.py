@@ -1,7 +1,6 @@
 import string
 import omdb
 import socket
-import imdb
 import xml.etree.cElementTree as ElementTree
 import click
 import urllib2
@@ -35,7 +34,7 @@ class CinemaObject:
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version='0.1.0')
+@click.version_option(version='1.1.0')
 def greet():
     """Flash sucks, CLIs don't!"""
     if not is_connected():
