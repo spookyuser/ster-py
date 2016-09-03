@@ -1,1 +1,4 @@
-click appdirs clint imdbpy
+click
+appdirs
+clint
+imdbpy
