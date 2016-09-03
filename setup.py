@@ -1,4 +1,4 @@
-"""A python cli based sterkinekor browser."""
+"""A tiny python based command line browser for sterkinekor."""
 
 from setuptools import setup, find_packages
 from codecs import open
