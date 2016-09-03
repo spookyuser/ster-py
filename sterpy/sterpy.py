@@ -263,8 +263,7 @@ def imdb_search(movie_name):
     try:
         search = omdb.search(movie_name)
         first_match = search[0].title
-        print first_match
-        rating = omdb.get(title=first_match, tomatoes=True, timeout=5)
+        rating = omdb.get(title=first_match, tomatoes=True)
         return float(rating['imdb_rating'])
     except:
         return 0
