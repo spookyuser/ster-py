@@ -1,4 +1,4 @@
 click
 appdirs
 clint
-omdbpy
+omdb

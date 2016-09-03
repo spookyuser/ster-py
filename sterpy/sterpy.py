@@ -34,7 +34,7 @@ class CinemaObject:
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version='1.1.0')
+@click.version_option(version='1.1.1')
 def greet():
     """Flash sucks, CLIs don't!"""
     if not is_connected():
