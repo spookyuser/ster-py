@@ -91,15 +91,6 @@ def xml_parse_cinema():
                     cinema_array.append(cinema)
 
 
-def print_all_movies(movies_array):
-    for index, movie in enumerate(movies_array):
-        cinema_availability = []
-        for cinema_id in cinema_array:
-            if cinema_id.i in movie.a:
-                cinema_availability.append(cinema_id.n)
-        print 'Movie: ', [index], '\n\t', movie.n, '\n\t', movie.i,
-
-
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     count = 0
     movies_array = xml_parse_movie()
