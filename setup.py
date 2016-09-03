@@ -30,7 +30,7 @@ setup(
     install_requires=['click', 'appdirs', 'clint', 'imdbpy'],
     entry_points={
         'console_scripts': [
-            'ster-py=ster-py:greet',
+            'ster-py=sterpy:main',
         ],
     },
 )
