@@ -1,4 +1,5 @@
 import string
+import omdb
 import socket
 import imdb
 import xml.etree.cElementTree as ElementTree
@@ -260,12 +261,12 @@ def download_new_files():
 
 
 def imdb_search(movie_name):
-    imdb_access = imdb.IMDb()
-    movie_list = imdb_access.search_movie(movie_name)
     try:
-        first_match = movie_list[0]
-        imdb_access.update(first_match)
-        return float(first_match['rating'])
+        search = omdb.search(movie_name)
+        first_match = search[0].title
+        print first_match
+        rating = omdb.get(title=first_match, tomatoes=True, timeout=5)
+        return float(rating['imdb_rating'])
     except:
         return 0
 
