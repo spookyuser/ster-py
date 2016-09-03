@@ -1,4 +1,5 @@
 import string
+import socket
 import imdb
 import xml.etree.cElementTree as ElementTree
 import click
@@ -35,11 +36,26 @@ class CinemaObject:
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version='0.1.0')
 def greet():
-    """Flash sucks, CLI doesn't!"""
+    """Flash sucks, CLIs don't!"""
+    if not is_connected():
+        print "No internet connection"
+        exit(0)
     check_update_xml()
     xml_parse_cinema()
     xml_parse_movie()
     pass
+
+
+def is_connected():
+    # https://codereview.stackexchange.com/questions/101659/test-if-a-network-is-online-by-using-urllib2
+    REMOTE_SERVER = "www.google.com"
+    try:
+        host = socket.gethostbyname(REMOTE_SERVER)
+        s = socket.create_connection((host, 80), 2)
+        return True
+    except:
+        pass
+    return False
 
 
 def xml_parse_movie():
@@ -162,6 +178,7 @@ def search_movies_from_cinema(cinema_search, imdb_sort):
             else:
                 exit(0)
             return None
+    print "Cinema not found"
 
 
 def get_tags(word):
