@@ -3,15 +3,29 @@
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
+import io
 
 here = path.abspath(path.dirname(__file__))
 
+
+def read(*filenames, **kwargs):
+    encoding = kwargs.get('encoding', 'utf-8')
+    sep = kwargs.get('sep', '\n')
+    buf = []
+    for filename in filenames:
+        with io.open(filename, encoding=encoding) as f:
+            buf.append(f.read())
+    return sep.join(buf)
+
+
 try:
     from pypandoc import convert
+
     read_md = lambda f: convert(f, 'rst')
 except ImportError:
     print("warning: pypandoc module not found, could not convert Markdown to RST")
     read_md = lambda f: open(f, 'r').read()
+    long_description = read('README.txt', 'CHANGES.txt')
 
 setup(
     name='ster-py',
@@ -24,7 +38,7 @@ setup(
     license='MIT',
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'Intended Audience :: End Users',
+        'Intended Audience :: Developers',
         'Topic :: Utilities',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
