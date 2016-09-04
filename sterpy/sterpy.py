@@ -10,7 +10,7 @@ from appdirs import *
 import time as timelib
 from clint.textui import colored, puts, indent
 
-__VERSION__ = '1.1.1'
+__VERSION__ = '1.1.2'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 cinema_array = []
 save_directory = AppDirs("sterpy")
