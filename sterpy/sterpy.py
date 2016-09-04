@@ -10,6 +10,7 @@ from appdirs import *
 import time as timelib
 from clint.textui import colored, puts, indent
 
+__VERSION__ = '1.1.1'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 cinema_array = []
 save_directory = AppDirs("sterpy")
@@ -34,7 +35,7 @@ class CinemaObject:
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version='1.1.1')
+@click.version_option(version=__VERSION__)
 def greet():
     """Flash sucks, CLIs don't!"""
     if not is_connected():

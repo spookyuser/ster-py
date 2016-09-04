@@ -3,6 +3,7 @@
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
+from sterpy import *
 
 here = path.abspath(path.dirname(__file__))
 
@@ -17,7 +18,7 @@ except ImportError:
 
 setup(
     name='ster-py',
-    version='1.1.1',
+    version=sterpy.__VERSION__,
     description='A python cli based sterkinekor browser, whatever, it needed to be done.',
     long_description=read_md('README.md'),
     url='https://github.com/spookyUnknownUser/ster-py',
