@@ -23,7 +23,7 @@ setup(
     long_description=read_md('README.md'),
     url='https://github.com/spookyUnknownUser/ster-py',
     author='spookyUnknownUser',
-    author_email='spookyUnknownUser@users.noreply.github.com@',
+    author_email='spookyUnknownUser@users.noreply.github.com',
     license='MIT',
     classifiers=[
         'Development Status :: 3 - Alpha',
