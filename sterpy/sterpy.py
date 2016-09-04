@@ -230,7 +230,7 @@ def check_update_xml():
     online_movie_md5 = ''
     local_movie_md5 = ''
     if not os.path.isdir(save_directory.user_cache_dir):
-        print "yes it's empty"
+        print "Creating local xml source..."
         os.makedirs(save_directory.user_cache_dir)
         download_new_files()
     else:
