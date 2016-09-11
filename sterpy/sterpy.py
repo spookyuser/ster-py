@@ -274,10 +274,7 @@ def imdb_search(movie_name):
 def checkcinema(**kwargs):
     if kwargs['forceupdate']:
         download_new_files()
-    if kwargs['imdbsort']:
-        search_movies_from_cinema(format(kwargs['cinema']), True)
-    else:
-        search_movies_from_cinema(format(kwargs['cinema']), False)
+    search_movies_from_cinema(format(kwargs['cinema']), kwargs['imdbsort'])
 
 
 if __name__ == "__main__":
