@@ -268,8 +268,8 @@ def imdb_search(movie_name):
 
 @greet.command()
 @click.argument('cinema')
-@click.option('--forceupdate', is_flag=True, help='Forces an update on movie lists')
-@click.option('--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score')
+@click.option('-f', '--forceupdate', is_flag=True, help='Forces an update on movie lists')
+@click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score')
 def checkcinema(**kwargs):
     if kwargs['forceupdate']:
         download_new_files()
