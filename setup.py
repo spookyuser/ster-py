@@ -34,7 +34,7 @@ setup(
     ],
     keywords='cli command python sterkinekor browser',
     packages=find_packages(),
-    install_requires=['click', 'appdirs', 'omdb'],
+    install_requires=['click', 'omdb'],
     entry_points={
         'console_scripts': [
             'ster-py=sterpy:main',

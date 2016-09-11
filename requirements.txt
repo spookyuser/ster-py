@@ -1,3 +1,2 @@
 click
-appdirs
 omdb
