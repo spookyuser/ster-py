@@ -1,3 +1,4 @@
+import os
 import string
 import omdb
 import socket
@@ -6,16 +7,15 @@ import click
 import urllib2
 import urllib
 import webbrowser
-from appdirs import *
 import time as timelib
 
 __VERSION__ = '1.1.2'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 cinema_array = []
-save_directory = AppDirs("sterpy")
-movies_location = save_directory.user_cache_dir + "\\movies.xml"
-cinema_location = save_directory.user_cache_dir + "\\cinemas.xml"
-hash_location = save_directory.user_cache_dir + "\\hash.xml"
+save_directory = click.get_app_dir('sterpy', roaming=False)
+movies_location = save_directory + "\\movies.xml"
+cinema_location = save_directory + "\\cinemas.xml"
+hash_location = save_directory + "\\hash.xml"
 
 
 class MovieObject:
@@ -224,9 +224,10 @@ def check_update_xml():
     # TODO alternatively just download HASHcheckXML and compare that with old. This could update unnecessarily tho
     online_movie_md5 = ''
     local_movie_md5 = ''
-    if not os.path.isdir(save_directory.user_cache_dir):
+    if not os.path.isdir(save_directory):
+        os.makedirs(save_directory)
+    if not os.path.isfile(movies_location and hash_location and cinema_location):
         print "Creating local xml source..."
-        os.makedirs(save_directory.user_cache_dir)
         download_new_files()
     else:
         with open(hash_location, 'rt') as f:
