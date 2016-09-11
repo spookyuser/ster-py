@@ -167,10 +167,7 @@ def print_movies(movie_array, imdb_sort):
 def search_movies_from_cinema(cinema_search, imdb_sort):
     for cinema in cinema_array:
         if cinema.n.upper().find(cinema_search.upper()) != -1:
-            if imdb_sort:
-                pairs = print_movies_per_cinema(cinema.i, cinema.n, True)
-            else:
-                pairs = print_movies_per_cinema(cinema.i, cinema.n, False)
+            pairs = print_movies_per_cinema(cinema.i, cinema.n, imdb_sort)
             value = click.prompt('Enter the movie number you want to book for, or enter "exit" or whatever')
             if value.isdigit():
                 value = int(value)
