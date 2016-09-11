@@ -166,19 +166,34 @@ def print_movies(movie_array, imdb_sort):
 def search_movies_from_cinema(cinema_search, imdb_sort):
     for cinema in cinema_array:
         if cinema.n.upper().find(cinema_search.upper()) != -1:
+            # TODO New function from here
+            # TODO OR move this to the initial command
             pairs = print_movies_per_cinema(cinema.i, cinema.n, imdb_sort)
-            value = click.prompt('Enter the movie number you want to book for, or enter "exit" or whatever')
-            if value.isdigit():
-                value = int(value)
-                movie_id = pairs.get(value)
-                get_performances(movie_id, cinema.i)
-            else:
+            # TODO Probably better way to do this
+            second_input = click.prompt('Enter Book, Google or Trailer followed by a number', prompt_suffix='\n> ')
+            tokens = second_input.split()
+            command = tokens[0]
+            try:
+                args = tokens[1]
+            except IndexError:
+                args = None
+            if command == 'exit':
                 exit(0)
+            elif command == 'book':
+                if args.isdigit():
+                    value = int(args)
+                    movie_id = pairs.get(value)
+                    get_performances(movie_id, cinema.i)
+            elif command == 'google':
+                print 'Google movie here'
+            elif command == 'trailer':
+                print 'Show trailer here'
             return None
     print "Cinema not found"
 
 
 def get_tags(word):
+    # TODO Dictionary of tags ASAP
     tags = []
     if word.find('IMAX 3D - ') > -1:
         tags.append('IMAX')
@@ -212,6 +227,7 @@ def get_performances(movie_id, cinema_id):
                 time.append(converted_time)
         date.append(time)
         time = []
+    print ''
     for index, day in enumerate(date):
         print [index + 1], '--', day[0]
         movie_times = ', '.join(map(str, date[index][1:]))
@@ -268,8 +284,8 @@ def imdb_search(movie_name):
 
 @greet.command()
 @click.argument('cinema')
-@click.option('-f', '--forceupdate', is_flag=True, help='Forces an update on movie lists')
-@click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score')
+@click.option('-f', '--forceupdate', is_flag=True, help='Forces an update on movie lists.')
+@click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
 def checkcinema(**kwargs):
     if kwargs['forceupdate']:
         download_new_files()
