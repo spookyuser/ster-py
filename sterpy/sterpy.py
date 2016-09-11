@@ -8,7 +8,6 @@ import urllib
 import webbrowser
 from appdirs import *
 import time as timelib
-from clint.textui import colored, puts, indent
 
 __VERSION__ = '1.1.2'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -114,8 +113,8 @@ def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     print_movies_array = []
 
     print ''
-    print colored.cyan("Showing Movies For: "),
-    print colored.magenta(cinema_name)
+    print click.style("Showing Movies For: ", fg='cyan'),
+    print click.style(cinema_name, fg='magenta')
 
     for movie in movies_array:
         if cinema_id in movie.a:
@@ -138,11 +137,11 @@ def print_movies(movie_array, imdb_sort):
             pairs[count + 1] = movie.i
             rating = str(movie.r).strip("'")
             if 0 <= movie.r <= 4.9:
-                print colored.red(rating),
+                print click.style(rating, fg='red'),
             if 5 <= movie.r <= 7.9:
-                print colored.yellow(rating),
+                print click.style(rating, fg='yellow'),
             if 8 <= movie.r <= 10:
-                print colored.green(rating),
+                print click.style(rating, fg='green'),
             print [count + 1], '--', movie.n,
             if movie.t is not None:
                 tags = string.translate(str(movie.t), None, "'")
@@ -216,8 +215,7 @@ def get_performances(movie_id, cinema_id):
     for index, day in enumerate(date):
         print [index + 1], '--', day[0]
         movie_times = ', '.join(map(str, date[index][1:]))
-        with indent(7):
-            puts(colored.green(str(movie_times)))
+        print click.style('\t' + str(movie_times), fg='green')
     if click.confirm('Do you want to open the booking page?'):
         webbrowser.open("http://www.sterkinekor.com/#/book/%s" % movie_id, new=0, autoraise=True)
 
@@ -253,7 +251,7 @@ def download_new_files():
     file_retrieve.retrieve("http://www.sterkinekor.com/website/scripts/xml_feed.php?name=cinemas", cinema_location)
     file_retrieve.retrieve("http://www.sterkinekor.com/website/scripts/xml_feed.php?name=hashcheck_app_android_v2",
                            hash_location)
-    puts(colored.green('Updated Movies'))
+    print click.style('Updated Movies', fg='green')
     return None
 
 
