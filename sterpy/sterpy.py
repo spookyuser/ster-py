@@ -166,30 +166,33 @@ def print_movies(movie_array, imdb_sort):
 def search_movies_from_cinema(cinema_search, imdb_sort):
     for cinema in cinema_array:
         if cinema.n.upper().find(cinema_search.upper()) != -1:
-            # TODO New function from here
-            # TODO OR move this to the initial command
             pairs = print_movies_per_cinema(cinema.i, cinema.n, imdb_sort)
-            # TODO Probably better way to do this
-            second_input = click.prompt('Enter Book, Google or Trailer followed by a number', prompt_suffix='\n> ')
-            tokens = second_input.split()
-            command = tokens[0]
-            try:
-                args = tokens[1]
-            except IndexError:
-                args = None
-            if command == 'exit':
-                exit(0)
-            elif command == 'book':
-                if args.isdigit():
-                    value = int(args)
-                    movie_id = pairs.get(value)
-                    get_performances(movie_id, cinema.i)
-            elif command == 'google':
-                print 'Google movie here'
-            elif command == 'trailer':
-                print 'Show trailer here'
+            display_choice(pairs, cinema)
             return None
     print "Cinema not found"
+
+
+def display_choice(pairs, found_cinema):
+    # TODO Probably better way to do this
+    # TODO OR move this to the initial command
+    second_input = click.prompt('Enter Book, Google or Trailer followed by a number', prompt_suffix='\n> ')
+    tokens = second_input.split()
+    command = tokens[0]
+    try:
+        args = tokens[1]
+    except IndexError:
+        args = None
+    if command == 'exit':
+        exit(0)
+    elif command == 'book':
+        if args.isdigit():
+            value = int(args)
+            movie_id = pairs.get(value)
+            get_performances(movie_id, found_cinema.i)
+    elif command == 'google':
+        print 'Google movie here'
+    elif command == 'trailer':
+        print 'Show trailer here'
 
 
 def get_tags(word):
