@@ -25,6 +25,7 @@ class MovieObject:
         self.a = cinema_id_array
         self.t = movie_tags
         self.r = movie_rating
+        self.v = "http://www.sterkinekor.com/assets_video/%s/shi.mp4" % movie_id
 
 
 class CinemaObject:
@@ -134,7 +135,7 @@ def print_movies(movie_array, imdb_sort):
     pairs = {}
     if imdb_sort:
         for movie in movie_array:
-            pairs[count + 1] = movie.i
+            pairs[count + 1] = movie
             rating = str(movie.r).strip("'")
             if 0 <= movie.r <= 4.9:
                 print click.style(rating, fg='red'),
@@ -151,7 +152,7 @@ def print_movies(movie_array, imdb_sort):
             count += 1
     else:
         for movie in movie_array:
-            pairs[count + 1] = movie.i
+            pairs[count + 1] = movie
             print '  ', [count + 1], '--', movie.n,
             if movie.t is not None:
                 tags = string.translate(str(movie.t), None, "'")
@@ -185,19 +186,19 @@ def display_choice(pairs, found_cinema):
         command = tokens[0].upper()
         try:
             args = tokens[1]
+            if args.isdigit():
+                value = int(args)
+                movie = pairs.get(value)
         except IndexError:
             args = None
         if command == 'EXIT':
             exit(0)
         elif command == 'BOOK':
-            if args.isdigit():
-                value = int(args)
-                movie_id = pairs.get(value)
-                get_performances(movie_id, found_cinema.i)
+            get_performances(movie.i, found_cinema.i)
         elif command == 'GOOGLE':
             print 'Google movie here'
         elif command == 'TRAILER':
-            print 'Show trailer here'
+            webbrowser.open(movie.v, new=0, autoraise=True)
 
 
 def get_tags(word):
@@ -241,6 +242,7 @@ def get_performances(movie_id, cinema_id):
         movie_times = ', '.join(map(str, date[index][1:]))
         print click.style('\t' + str(movie_times), fg='green')
     if click.confirm('Do you want to open the booking page?'):
+        # TODO Prevent autoplay
         webbrowser.open("http://www.sterkinekor.com/#/book/%s" % movie_id, new=0, autoraise=True)
         exit(0)
 
