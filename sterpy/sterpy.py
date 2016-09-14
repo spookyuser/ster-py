@@ -314,6 +314,10 @@ def checkcinema(**kwargs):
     search_movies_from_cinema(format(kwargs['cinema']), kwargs['imdbsort'])
 
 
+def checkprovince(province_keyowrd):
+    for cinema in cinema_array:
+        if cinema.pn.upper().find(province_keyowrd.upper()) != -1:
+            print cinema.n
+
 if __name__ == "__main__":
-    # greet()
-    xml_parse_cinema()
+    greet()
