@@ -175,24 +175,28 @@ def search_movies_from_cinema(cinema_search, imdb_sort):
 def display_choice(pairs, found_cinema):
     # TODO Probably better way to do this
     # TODO OR move this to the initial command
-    second_input = click.prompt('Enter Book, Google or Trailer followed by a number', prompt_suffix='\n> ')
-    tokens = second_input.split()
-    command = tokens[0]
-    try:
-        args = tokens[1]
-    except IndexError:
-        args = None
-    if command == 'exit':
-        exit(0)
-    elif command == 'book':
-        if args.isdigit():
-            value = int(args)
-            movie_id = pairs.get(value)
-            get_performances(movie_id, found_cinema.i)
-    elif command == 'google':
-        print 'Google movie here'
-    elif command == 'trailer':
-        print 'Show trailer here'
+    choice = True
+    while choice is True:
+        # TODO Better phrasing
+        second_input = click.prompt('options: \n  book number \n  google number \n  trailer number. \nexit ',
+                                    prompt_suffix='\n> ')
+        tokens = second_input.split()
+        command = tokens[0].upper()
+        try:
+            args = tokens[1]
+        except IndexError:
+            args = None
+        if command == 'EXIT':
+            exit(0)
+        elif command == 'BOOK':
+            if args.isdigit():
+                value = int(args)
+                movie_id = pairs.get(value)
+                get_performances(movie_id, found_cinema.i)
+        elif command == 'GOOGLE':
+            print 'Google movie here'
+        elif command == 'TRAILER':
+            print 'Show trailer here'
 
 
 def get_tags(word):
@@ -237,6 +241,7 @@ def get_performances(movie_id, cinema_id):
         print click.style('\t' + str(movie_times), fg='green')
     if click.confirm('Do you want to open the booking page?'):
         webbrowser.open("http://www.sterkinekor.com/#/book/%s" % movie_id, new=0, autoraise=True)
+        exit(0)
 
 
 def check_update_xml():
