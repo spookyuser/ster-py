@@ -180,7 +180,7 @@ def display_choice(pairs, found_cinema):
     choice = True
     while choice is True:
         # TODO Better phrasing
-        second_input = click.prompt('\noptions: \n  book number \n  google number \n  trailer number. \nexit ',
+        second_input = click.prompt('\noptions: \n  book number \n  google number \n  trailer number \nexit ',
                                     prompt_suffix='\n> ')
         tokens = second_input.split()
         command = tokens[0].upper()
@@ -196,7 +196,7 @@ def display_choice(pairs, found_cinema):
         elif command == 'BOOK':
             get_performances(movie.i, found_cinema.i)
         elif command == 'GOOGLE':
-            print 'Google movie here'
+            webbrowser.open("https://www.google.com/search?q=%s" % movie.n)
         elif command == 'TRAILER':
             webbrowser.open(movie.v, new=0, autoraise=True)
 
