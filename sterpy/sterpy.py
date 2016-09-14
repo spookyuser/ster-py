@@ -175,10 +175,11 @@ def search_movies_from_cinema(cinema_search, imdb_sort):
 def display_choice(pairs, found_cinema):
     # TODO Probably better way to do this
     # TODO OR move this to the initial command
+    # TODO book 1-10
     choice = True
     while choice is True:
         # TODO Better phrasing
-        second_input = click.prompt('options: \n  book number \n  google number \n  trailer number. \nexit ',
+        second_input = click.prompt('\noptions: \n  book number \n  google number \n  trailer number. \nexit ',
                                     prompt_suffix='\n> ')
         tokens = second_input.split()
         command = tokens[0].upper()
