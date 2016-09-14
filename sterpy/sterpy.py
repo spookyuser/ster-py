@@ -29,9 +29,12 @@ class MovieObject:
 
 
 class CinemaObject:
-    def __init__(self, cinema_name, cinema_id):
+    # TODO create inherited province object
+    def __init__(self, cinema_name, cinema_id, cinema_province_id, cinema_province_name):
         self.n = cinema_name
         self.i = cinema_id
+        self.pi = cinema_province_id
+        self.pn = cinema_province_name
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -95,17 +98,25 @@ def xml_parse_movie():
 def xml_parse_cinema():
     global cinema_array
     cinema_id = ''
+    cinema_province_id = ''
+    cinema_province_name = ''
     with open(cinema_location, 'rt') as f:
         tree = ElementTree.parse(f)
-    for cinema in tree.iter(tag='cinemas'):
-        for cine_num in cinema.getchildren():
-            for node in cine_num.getchildren():
-                if node.tag == 'complexid':
-                    cinema_id = node.text
-                if node.tag == 'name':
-                    cinema_name = node.text
-                    cinema = CinemaObject(cinema_name, cinema_id)
-                    cinema_array.append(cinema)
+    for province in tree.iter(tag='item'):
+        for node in province.getchildren():
+            if node.tag == 'id':
+                cinema_province_id = node.text
+            if node.tag == 'name':
+                cinema_province_name = node.text
+        for cinema in province:
+            for cine_num in cinema.getchildren():
+                for node in cine_num.getchildren():
+                    if node.tag == 'complexid':
+                        cinema_id = node.text
+                    if node.tag == 'name':
+                        cinema_name = node.text
+                        cinema = CinemaObject(cinema_name, cinema_id, cinema_province_id, cinema_province_name)
+                        cinema_array.append(cinema)
 
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
@@ -304,4 +315,5 @@ def checkcinema(**kwargs):
 
 
 if __name__ == "__main__":
-    greet()
+    # greet()
+    xml_parse_cinema()
