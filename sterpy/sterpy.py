@@ -82,7 +82,7 @@ def xml_parse_movie():
                 if node.tag == 'cinema_ids':
                     cinema_id_array = node.text.split(',')
                     if coming_soon != 1:
-                        movie = MovieObject(movie_name, movie_id, cinema_id_array, movie_tags, None)
+                        movie = MovieObject(string.capwords(movie_name), movie_id, cinema_id_array, movie_tags, None)
                         movies_array.append(movie)
                         coming_soon = 0
                     else:
