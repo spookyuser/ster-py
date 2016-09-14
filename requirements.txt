@@ -1,2 +1,3 @@
 click
 omdb
+colorama
