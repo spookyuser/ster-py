@@ -46,7 +46,6 @@ def greet():
         exit(0)
     check_update_xml()
     xml_parse_cinema()
-    xml_parse_movie()
     pass
 
 
@@ -314,10 +313,20 @@ def checkcinema(**kwargs):
     search_movies_from_cinema(format(kwargs['cinema']), kwargs['imdbsort'])
 
 
-def checkprovince(province_keyowrd):
+@greet.command()
+@click.argument('province')
+@click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
+def checkprovince(**kwargs):
+    province_array = []
     for cinema in cinema_array:
-        if cinema.pn.upper().find(province_keyowrd.upper()) != -1:
-            print cinema.n
+        if cinema.pn.upper().find(kwargs['province'].upper()) != -1:
+            province_array.append(cinema.n)
+    for count, province in enumerate(province_array):
+        print [count + 1], province
+    province_choice = int(click.prompt("Enter a Number", prompt_suffix='\n> '))
+    click.clear()
+    search_movies_from_cinema(province_array[province_choice - 1], kwargs['imdbsort'])
+
 
 if __name__ == "__main__":
     greet()
