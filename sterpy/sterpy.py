@@ -323,9 +323,17 @@ def checkprovince(**kwargs):
             province_array.append(cinema.n)
     for count, province in enumerate(province_array):
         print [count + 1], province
-    province_choice = int(click.prompt("Enter a Number", prompt_suffix='\n> '))
-    click.clear()
-    search_movies_from_cinema(province_array[province_choice - 1], kwargs['imdbsort'])
+
+    if not province_array:
+        print "No cinemas found"
+    else:
+        province_choice = click.prompt("\nEnter a Number", prompt_suffix='\n> ')
+        if province_choice.isdigit():
+            province_choice = int(province_choice)
+            click.clear()
+            search_movies_from_cinema(province_array[province_choice - 1], kwargs['imdbsort'])
+        else:
+            "Please enter a valid number"
 
 
 if __name__ == "__main__":
