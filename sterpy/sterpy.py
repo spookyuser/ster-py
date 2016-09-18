@@ -190,7 +190,7 @@ def display_choice(pairs, found_cinema):
     choice = True
     while choice is True:
         # TODO Better phrasing
-        second_input = click.prompt('\noptions: \n  book number \n  google number \n  trailer number \nexit ',
+        second_input = click.prompt('\noptions:  book [number] | google [number] |  trailer [number] | exit',
                                     prompt_suffix='\n> ')
         tokens = second_input.split()
         command = tokens[0].upper()
