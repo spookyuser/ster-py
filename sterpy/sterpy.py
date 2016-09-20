@@ -1,3 +1,4 @@
+import os
 import string
 import omdb
 import socket
@@ -6,17 +7,15 @@ import click
 import urllib2
 import urllib
 import webbrowser
-from appdirs import *
 import time as timelib
-from clint.textui import colored, puts, indent
 
-__VERSION__ = '1.1.2'
+__VERSION__ = '1.2.0'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 cinema_array = []
-save_directory = AppDirs("sterpy")
-movies_location = save_directory.user_cache_dir + "\\movies.xml"
-cinema_location = save_directory.user_cache_dir + "\\cinemas.xml"
-hash_location = save_directory.user_cache_dir + "\\hash.xml"
+save_directory = click.get_app_dir('sterpy', roaming=False)
+movies_location = save_directory + "\\movies.xml"
+cinema_location = save_directory + "\\cinemas.xml"
+hash_location = save_directory + "\\hash.xml"
 
 
 class MovieObject:
@@ -26,12 +25,16 @@ class MovieObject:
         self.a = cinema_id_array
         self.t = movie_tags
         self.r = movie_rating
+        self.v = "http://www.sterkinekor.com/assets_video/%s/shi.mp4" % movie_id
 
 
 class CinemaObject:
-    def __init__(self, cinema_name, cinema_id):
+    # TODO create inherited province object
+    def __init__(self, cinema_name, cinema_id, cinema_province_id, cinema_province_name):
         self.n = cinema_name
         self.i = cinema_id
+        self.pi = cinema_province_id
+        self.pn = cinema_province_name
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -43,7 +46,6 @@ def greet():
         exit(0)
     check_update_xml()
     xml_parse_cinema()
-    xml_parse_movie()
     pass
 
 
@@ -82,7 +84,7 @@ def xml_parse_movie():
                 if node.tag == 'cinema_ids':
                     cinema_id_array = node.text.split(',')
                     if coming_soon != 1:
-                        movie = MovieObject(movie_name, movie_id, cinema_id_array, movie_tags, None)
+                        movie = MovieObject(string.capwords(movie_name), movie_id, cinema_id_array, movie_tags, None)
                         movies_array.append(movie)
                         coming_soon = 0
                     else:
@@ -95,17 +97,25 @@ def xml_parse_movie():
 def xml_parse_cinema():
     global cinema_array
     cinema_id = ''
+    cinema_province_id = ''
+    cinema_province_name = ''
     with open(cinema_location, 'rt') as f:
         tree = ElementTree.parse(f)
-    for cinema in tree.iter(tag='cinemas'):
-        for cine_num in cinema.getchildren():
-            for node in cine_num.getchildren():
-                if node.tag == 'complexid':
-                    cinema_id = node.text
-                if node.tag == 'name':
-                    cinema_name = node.text
-                    cinema = CinemaObject(cinema_name, cinema_id)
-                    cinema_array.append(cinema)
+    for province in tree.iter(tag='item'):
+        for node in province.getchildren():
+            if node.tag == 'id':
+                cinema_province_id = node.text
+            if node.tag == 'name':
+                cinema_province_name = node.text
+        for cinema in province:
+            for cine_num in cinema.getchildren():
+                for node in cine_num.getchildren():
+                    if node.tag == 'complexid':
+                        cinema_id = node.text
+                    if node.tag == 'name':
+                        cinema_name = node.text
+                        cinema = CinemaObject(cinema_name, cinema_id, cinema_province_id, cinema_province_name)
+                        cinema_array.append(cinema)
 
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
@@ -114,8 +124,8 @@ def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     print_movies_array = []
 
     print ''
-    print colored.cyan("Showing Movies For: "),
-    print colored.magenta(cinema_name)
+    print click.style("Showing Movies For: ", fg='cyan'),
+    print click.style(cinema_name, fg='magenta')
 
     for movie in movies_array:
         if cinema_id in movie.a:
@@ -135,14 +145,14 @@ def print_movies(movie_array, imdb_sort):
     pairs = {}
     if imdb_sort:
         for movie in movie_array:
-            pairs[count + 1] = movie.i
+            pairs[count + 1] = movie
             rating = str(movie.r).strip("'")
             if 0 <= movie.r <= 4.9:
-                print colored.red(rating),
+                print click.style(rating, fg='red'),
             if 5 <= movie.r <= 7.9:
-                print colored.yellow(rating),
+                print click.style(rating, fg='yellow'),
             if 8 <= movie.r <= 10:
-                print colored.green(rating),
+                print click.style(rating, fg='green'),
             print [count + 1], '--', movie.n,
             if movie.t is not None:
                 tags = string.translate(str(movie.t), None, "'")
@@ -152,7 +162,7 @@ def print_movies(movie_array, imdb_sort):
             count += 1
     else:
         for movie in movie_array:
-            pairs[count + 1] = movie.i
+            pairs[count + 1] = movie
             print '  ', [count + 1], '--', movie.n,
             if movie.t is not None:
                 tags = string.translate(str(movie.t), None, "'")
@@ -167,22 +177,42 @@ def print_movies(movie_array, imdb_sort):
 def search_movies_from_cinema(cinema_search, imdb_sort):
     for cinema in cinema_array:
         if cinema.n.upper().find(cinema_search.upper()) != -1:
-            if imdb_sort:
-                pairs = print_movies_per_cinema(cinema.i, cinema.n, True)
-            else:
-                pairs = print_movies_per_cinema(cinema.i, cinema.n, False)
-            value = click.prompt('Enter the movie number you want to book for, or enter "exit" or whatever')
-            if value.isdigit():
-                value = int(value)
-                movie_id = pairs.get(value)
-                get_performances(movie_id, cinema.i)
-            else:
-                exit(0)
+            pairs = print_movies_per_cinema(cinema.i, cinema.n, imdb_sort)
+            display_choice(pairs, cinema)
             return None
     print "Cinema not found"
 
 
+def display_choice(pairs, found_cinema):
+    # TODO Probably better way to do this
+    # TODO OR move this to the initial command
+    # TODO book 1-10
+    choice = True
+    while choice is True:
+        # TODO Better phrasing
+        second_input = click.prompt('\noptions:  book [number] | google [number] |  trailer [number] | exit',
+                                    prompt_suffix='\n> ')
+        tokens = second_input.split()
+        command = tokens[0].upper()
+        try:
+            args = tokens[1]
+            if args.isdigit():
+                value = int(args)
+                movie = pairs.get(value)
+        except IndexError:
+            args = None
+        if command == 'EXIT':
+            exit(0)
+        elif command == 'BOOK':
+            get_performances(movie.i, found_cinema.i)
+        elif command == 'GOOGLE':
+            webbrowser.open("https://www.google.com/search?q=%s" % movie.n)
+        elif command == 'TRAILER':
+            webbrowser.open(movie.v, new=0, autoraise=True)
+
+
 def get_tags(word):
+    # TODO Dictionary of tags ASAP
     tags = []
     if word.find('IMAX 3D - ') > -1:
         tags.append('IMAX')
@@ -216,22 +246,25 @@ def get_performances(movie_id, cinema_id):
                 time.append(converted_time)
         date.append(time)
         time = []
+    print ''
     for index, day in enumerate(date):
         print [index + 1], '--', day[0]
         movie_times = ', '.join(map(str, date[index][1:]))
-        with indent(7):
-            puts(colored.green(str(movie_times)))
+        print click.style('\t' + str(movie_times), fg='green')
     if click.confirm('Do you want to open the booking page?'):
+        # TODO Prevent autoplay
         webbrowser.open("http://www.sterkinekor.com/#/book/%s" % movie_id, new=0, autoraise=True)
+        exit(0)
 
 
 def check_update_xml():
     # TODO alternatively just download HASHcheckXML and compare that with old. This could update unnecessarily tho
     online_movie_md5 = ''
     local_movie_md5 = ''
-    if not os.path.isdir(save_directory.user_cache_dir):
+    if not os.path.isdir(save_directory):
+        os.makedirs(save_directory)
+    if not os.path.isfile(movies_location and hash_location and cinema_location):
         print "Creating local xml source..."
-        os.makedirs(save_directory.user_cache_dir)
         download_new_files()
     else:
         with open(hash_location, 'rt') as f:
@@ -256,7 +289,7 @@ def download_new_files():
     file_retrieve.retrieve("http://www.sterkinekor.com/website/scripts/xml_feed.php?name=cinemas", cinema_location)
     file_retrieve.retrieve("http://www.sterkinekor.com/website/scripts/xml_feed.php?name=hashcheck_app_android_v2",
                            hash_location)
-    puts(colored.green('Updated Movies'))
+    print click.style('Updated Movies', fg='green')
     return None
 
 
@@ -272,15 +305,35 @@ def imdb_search(movie_name):
 
 @greet.command()
 @click.argument('cinema')
-@click.option('--forceupdate', is_flag=True, help='Forces an update on movie lists')
-@click.option('--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score')
+@click.option('-f', '--forceupdate', is_flag=True, help='Forces an update on movie lists.')
+@click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
 def checkcinema(**kwargs):
     if kwargs['forceupdate']:
         download_new_files()
-    if kwargs['imdbsort']:
-        search_movies_from_cinema(format(kwargs['cinema']), True)
+    search_movies_from_cinema(format(kwargs['cinema']), kwargs['imdbsort'])
+
+
+@greet.command()
+@click.argument('province')
+@click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
+def checkprovince(**kwargs):
+    province_array = []
+    for cinema in cinema_array:
+        if cinema.pn.upper().find(kwargs['province'].upper()) != -1:
+            province_array.append(cinema.n)
+    for count, province in enumerate(province_array):
+        print [count + 1], province
+
+    if not province_array:
+        print "No cinemas found"
     else:
-        search_movies_from_cinema(format(kwargs['cinema']), False)
+        province_choice = click.prompt("\nEnter a Number", prompt_suffix='\n> ')
+        if province_choice.isdigit():
+            province_choice = int(province_choice)
+            click.clear()
+            search_movies_from_cinema(province_array[province_choice - 1], kwargs['imdbsort'])
+        else:
+            "Please enter a valid number"
 
 
 if __name__ == "__main__":
