@@ -4,6 +4,7 @@ python:
 install:
   - pip install pypandoc
   - pip install -r requirements.txt
+  - pypandoc.download_pandoc
   - pip install .
 before deploy: "python setup.py sdist bdist_wheel"
 deploy:
