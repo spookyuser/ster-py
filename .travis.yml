@@ -1,7 +1,6 @@
 language: python
 python:
   - "2.7"
-  - "PyPy"
 install:
   - pip install pypandoc
   - pip install .
@@ -11,5 +10,5 @@ deploy:
   provider: pypi
   user: "spookyunknownuser"
   password: "CeBwYYSQhCvOn/L+nfdj3fy3by0Vpwycys8CBgbLAsBh4+fEbZEMXV4AvgOpInzTsmoKWpF6ApTyRi3m3h3HEyMZXe2fZPQo3zKZaWvY33v7u7U2IiW6t0V1QCOdIaLL2oISluujxLD4bHoO+KtXOOkPqP4QB/W+df2QIfdWmjSZkIBS7Lt/VtFUxlTZbDlMg7jJdHWxytX58er+G9WUxIOSrex/RrClgW8RDOekum2Q/qE40DYNInlCXPXrXpd0lpyZVMNVS8A8DsCvdFB6HJ9x1tGfjAReGeLQdVFNhLKxl8wLNRtul1BrLVhSG/9l6ZyUNSjcwy6+y8bgTeUfVioJlinl2aX3V8nmx4fdUQ8qCBm1Zt42ZSKdpccn37C7SmAwvv/2umSjEXTAVkd6W4JS3yEFjHz/EcypNuED1zGqsp44tdsjRgr+bmoj0C6PtshfsBs727Yl0Jje2PLsvzf0b3DpiIcSyL5jHTfmynA/Nk07axSn0J6YoZ78prpFOIaI/4MRiFRupG7EX4OozH/iJLGfmWqV1OudrKowTnc5imhk9blWsT2wI6joyzEOK5FGZ7yornmix359U2Ny3LkKknS0OdC6Gh4NKTsvWg1Q+9fXqBcW/js1RW/JaxGRZktElkH+GN3kAqt2bwXYzJN6aIjU9WbmMWkrM+T2Qm8="
-   on:
+  on:
     tags: true
