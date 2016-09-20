@@ -9,7 +9,7 @@ import urllib
 import webbrowser
 import time as timelib
 
-__VERSION__ = '1.1.2'
+__VERSION__ = '1.2.0'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 cinema_array = []
 save_directory = click.get_app_dir('sterpy', roaming=False)
