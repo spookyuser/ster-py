@@ -6,11 +6,11 @@
 ##Usage:
   `ster-py checkinema eastgate`
 
-  ![basic](https://i.imgur.com/4nb1WRP.png)
+  ![basic](https://i.imgur.com/QmLHUZj.png)
 
   `ster-py checkcinema --imdbsort eastgate`
 
-  ![imdb](https://i.imgur.com/bZYKs9y.png)
+  ![imdb](https://i.imgur.com/xONvurQ.png)
 
   `ster-py checkcinema --forceupdate "bay west"`
 
@@ -18,19 +18,26 @@
 
    `ster-py -h`
 
+   `ster-py checkprovince gauteng`
+
+   `ster-py checkprovince --imdbsort "western cape"`
+
 ---
 
 ##Features
 * View movie times in your terminal!
 * Super quick access to what's showing in a particular cinema
 * Sorting by IMDBratings (takes a while)
+* View trailers
+* Google search movies
+* Find cinemas by province
 
 ---
 
 ##Future updates
 _(depending on how bored I am)_
-* Open a youtube trailer in browser
-* Open a google search of movie in browser
+* ~~Open a youtube trailer in browser~~
+* ~~Open a google search of movie in browser~~
 * Show recently released movies
 * Search movies
 * List all movies by IMDB rating
