@@ -7,6 +7,7 @@ import click
 import urllib2
 import urllib
 import webbrowser
+import requests
 import time as timelib
 
 __VERSION__ = '1.2.0'
@@ -116,6 +117,16 @@ def xml_parse_cinema():
                         cinema_name = node.text
                         cinema = CinemaObject(cinema_name, cinema_id, cinema_province_id, cinema_province_name)
                         cinema_array.append(cinema)
+
+
+def json_parse_cinema():
+    request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas')
+    cinema_json = request.json()
+    for cinema in cinema_json:
+        cinema_name = cinema["Name"]
+        cinema_id = cinema["Id"]
+        new_cinema = CinemaObject(cinema_name, cinema_id)
+        cinema_array.append(new_cinema)
 
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
@@ -284,6 +295,7 @@ def check_update_xml():
 
 
 def download_new_files():
+    # TODO implement POST here -- movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas
     file_retrieve = urllib.URLopener()
     file_retrieve.retrieve("http://www.sterkinekor.com/website/scripts/xml_feed.php?name=movies", movies_location)
     file_retrieve.retrieve("http://www.sterkinekor.com/website/scripts/xml_feed.php?name=cinemas", cinema_location)
@@ -337,4 +349,5 @@ def checkprovince(**kwargs):
 
 
 if __name__ == "__main__":
-    greet()
+    # greet()
+    json_parse_cinema()
