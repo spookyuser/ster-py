@@ -131,15 +131,18 @@ def json_parse_cinema():
 def json_parse_movies(cinema_id):
     movies_array = []
     movie_request = requests.post(
-        'https://movies.sterkinekor.co.za/Browsing/QuickTickets/Movies?Cinemas= %s' % cinema_id)
+        'https://movies.sterkinekor.co.za/Browsing/QuickTickets/Movies', data={'Cinemas': cinema_id})
     movie_json = movie_request.json()
     for movie in movie_json:
-        movie_name = movie['Name']
+        movie_name = string.capwords(movie['Name'])
         movie_id = movie['Id']
-        movie_type = get_movie_type(movie_id, cinema_id)
+        movie_types = json_parse_types(movie_id, cinema_id)
+        movie = (movie_name, movie_id, None, movie_types, None)
+        movies_array.append(movie)
+    return movies_array
 
 
-def get_movie_type(movie_id, cinema_id):
+def json_parse_types(movie_id, cinema_id):
     type_array = []
     type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
                                  data={'Movies': movie_id, 'Cinemas': cinema_id})
@@ -147,9 +150,6 @@ def get_movie_type(movie_id, cinema_id):
     for movie_type in type_json:
         type_array.append(movie_type['Name'])
     return type_array
-    
-
-
 
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
@@ -373,4 +373,7 @@ def checkprovince(**kwargs):
 
 if __name__ == "__main__":
     # greet()
+    # json_parse_cinema()
+    # json_parse_movies('1071')
     json_parse_cinema()
+    search_movies_from_cinema('zone', False)
