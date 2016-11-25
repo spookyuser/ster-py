@@ -137,7 +137,7 @@ def json_parse_movies(cinema_id):
         movie_name = string.capwords(movie['Name'])
         movie_id = movie['Id']
         movie_types = json_parse_types(movie_id, cinema_id)
-        movie = (movie_name, movie_id, None, movie_types, None)
+        movie = MovieObject(movie_name, movie_id, None, movie_types, None)
         movies_array.append(movie)
     return movies_array
 
@@ -154,17 +154,14 @@ def json_parse_types(movie_id, cinema_id):
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     count = 0
-    movies_array = xml_parse_movie()
+    movies_array = json_parse_movies(cinema_id)
     print_movies_array = []
 
     print ''
     print click.style("Showing Movies For: ", fg='cyan'),
     print click.style(cinema_name, fg='magenta')
 
-    for movie in movies_array:
-        if cinema_id in movie.a:
-            print_movies_array.append(movie)
-            count += 1
+    print_movies_array = movies_array
     if imdb_sort:
         with click.progressbar(print_movies_array, label='Downloading IMDB data', ) as bar:
             for movie in bar:
