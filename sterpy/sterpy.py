@@ -31,11 +31,9 @@ class MovieObject:
 
 class CinemaObject:
     # TODO create inherited province object
-    def __init__(self, cinema_name, cinema_id, cinema_province_id, cinema_province_name):
+    def __init__(self, cinema_name, cinema_id):
         self.n = cinema_name
         self.i = cinema_id
-        self.pi = cinema_province_id
-        self.pn = cinema_province_name
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -127,6 +125,31 @@ def json_parse_cinema():
         cinema_id = cinema["Id"]
         new_cinema = CinemaObject(cinema_name, cinema_id)
         cinema_array.append(new_cinema)
+    print cinema_array
+
+
+def json_parse_movies(cinema_id):
+    movies_array = []
+    movie_request = requests.post(
+        'https://movies.sterkinekor.co.za/Browsing/QuickTickets/Movies?Cinemas= %s' % cinema_id)
+    movie_json = movie_request.json()
+    for movie in movie_json:
+        movie_name = movie['Name']
+        movie_id = movie['Id']
+        movie_type = get_movie_type(movie_id, cinema_id)
+
+
+def get_movie_type(movie_id, cinema_id):
+    type_array = []
+    type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
+                                 data={'Movies': movie_id, 'Cinemas': cinema_id})
+    type_json = type_request.json()
+    for movie_type in type_json:
+        type_array.append(movie_type['Name'])
+    return type_array
+    
+
+
 
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
