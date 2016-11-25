@@ -125,7 +125,7 @@ def json_parse_cinema():
         cinema_id = cinema["Id"]
         new_cinema = CinemaObject(cinema_name, cinema_id)
         cinema_array.append(new_cinema)
-    print cinema_array
+
 
 
 def json_parse_movies(cinema_id):
@@ -186,6 +186,8 @@ def print_movies(movie_array, imdb_sort):
                 print click.style(rating, fg='green'),
             print [count + 1], '--', movie.n,
             if movie.t is not None:
+                # https://stackoverflow.com/questions/599625/python-string-prints-as-ustring
+                # Pickup with fixing 'u
                 tags = string.translate(str(movie.t), None, "'")
                 print tags
             else:
