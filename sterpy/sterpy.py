@@ -1,4 +1,5 @@
 import os
+import time
 import string
 import omdb
 import socket
@@ -128,7 +129,20 @@ def json_parse_cinema():
 
 
 def json_parse_performances(movie_id, show_type, cinema_id):
-    print 'hi'
+    # Do show type logic in the book method, IE which show, then here
+    show_time = []
+    performances_request = requests.post('http://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
+                                         data={'ShowTypes': show_type, 'Cinemas': cinema_id, 'Movies': movie_id},
+                                         headers={'content-type': 'application/x-www-form-urlencoded'})
+    performances_json = performances_request.json()
+    for json_time in performances_json:
+        unix_time = str(json_time['Time']).strip('/Date()')
+        unix_time = unix_time.translate(None, string.letters)
+        gmt_time = time.strftime("%a %d %H:%M GMT", time.gmtime(int(unix_time) / 1000.0))
+        show_time.append(gmt_time)
+    return show_time
+
+
 
 
 def json_parse_movies(cinema_id):
@@ -377,5 +391,6 @@ if __name__ == "__main__":
     # greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
-    json_parse_cinema()
-    search_movies_from_cinema('zone', False)
+    # json_parse_cinema()
+    # search_movies_from_cinema('zone', False)
+    json_parse_performances('h-HO00000094', '3D', '1071')
