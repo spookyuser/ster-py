@@ -148,7 +148,7 @@ def json_parse_types(movie_id, cinema_id):
                                  data={'Movies': movie_id, 'Cinemas': cinema_id})
     type_json = type_request.json()
     for movie_type in type_json:
-        type_array.append(movie_type['Name'])
+        type_array.append(str(movie_type['Name']).encode('utf-8'))
     return type_array
 
 
@@ -186,8 +186,6 @@ def print_movies(movie_array, imdb_sort):
                 print click.style(rating, fg='green'),
             print [count + 1], '--', movie.n,
             if movie.t is not None:
-                # https://stackoverflow.com/questions/599625/python-string-prints-as-ustring
-                # Pickup with fixing 'u
                 tags = string.translate(str(movie.t), None, "'")
                 print tags
             else:
