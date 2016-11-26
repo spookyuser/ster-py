@@ -127,6 +127,9 @@ def json_parse_cinema():
         cinema_array.append(new_cinema)
 
 
+def json_parse_performances(movie_id, show_type, cinema_id):
+    print 'hi'
+
 
 def json_parse_movies(cinema_id):
     movies_array = []
@@ -149,6 +152,8 @@ def json_parse_types(movie_id, cinema_id):
     type_json = type_request.json()
     for movie_type in type_json:
         type_array.append(str(movie_type['Name']).encode('utf-8'))
+    if len(type_array) == 1 and '2D' in type_array:
+        type_array = None
     return type_array
 
 
