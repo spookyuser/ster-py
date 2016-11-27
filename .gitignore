@@ -221,3 +221,4 @@ assets/
 notes
 *.iml
 README.txt
+*.json
