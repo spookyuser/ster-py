@@ -130,7 +130,10 @@ def json_parse_cinema():
 
 def json_parse_performances(movie_id, show_type, cinema_id):
     # TODO: There has to be a better way to do this.
+    # https://stackoverflow.com/questions/4002598/python-list-how-to-read-the-previous-element-when-using-for-loop
     # Do show type logic in the book method, IE which show, then here
+    dates = []
+    times = []
     show_time = []
     performances_request = requests.post('http://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
                                          data={'ShowTypes': show_type, 'Cinemas': cinema_id, 'Movies': movie_id},
@@ -138,22 +141,27 @@ def json_parse_performances(movie_id, show_type, cinema_id):
     performances_json = performances_request.json()
     for json_time in performances_json:
         unix_time = str(json_time['Time']).strip('/Date()')
-        unix_time = int(unix_time) / 1000.0
+        unix_time = int(int(unix_time) / 1000.0)
         show_time.append(unix_time)
-    for day, show in enumerate(show_time):
-        gmt_time = time.strftime("%H:%M GMT", time.gmtime(show))
-        gmt_date = time.strftime("%d", time.gmtime(show))
-        try:
-            next_gmt_date = time.strftime("%d", time.gmtime(int(show_time[day + 1])))
-            if day == 0:
-                print gmt_date
-                print gmt_time
-            if int(gmt_date) != int(next_gmt_date):
-                print next_gmt_date
-            else:
-                print gmt_time
-        except IndexError:
-            print gmt_time
+
+    for index_a, index_b in zip(show_time, show_time[1:]):
+        print index_a, index_b
+        day = time.strftime("%d", time.gmtime(index_a))
+        next_index = time.strftime("%d", time.gmtime(index_b))
+        hour = time.strftime("%H:%M", time.gmtime(index_a))
+        if len(times) == 0:
+            times.append(day)
+            times.append(hour)
+        if int(day) == int(next_index):
+            times.append(time.strftime("%H:%M", time.gmtime(index_b)))
+        else:
+            dates.append(times)
+            times = [next_index, time.strftime("%H:%M", time.gmtime(index_b))]
+    dates.append(times)
+    for index, date in enumerate(dates):
+        print [index + 1], '--', date[0]
+        movie_times = ', '.join(map(str, dates[index][1:]))
+        print click.style('\t' + str(movie_times), fg='green')
 
 
 def json_parse_movies(cinema_id):
