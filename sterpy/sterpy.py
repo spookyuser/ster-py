@@ -129,6 +129,7 @@ def json_parse_cinema():
 
 
 def json_parse_performances(movie_id, show_type, cinema_id):
+    # TODO: There has to be a better way to do this.
     # Do show type logic in the book method, IE which show, then here
     show_time = []
     performances_request = requests.post('http://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
@@ -137,12 +138,22 @@ def json_parse_performances(movie_id, show_type, cinema_id):
     performances_json = performances_request.json()
     for json_time in performances_json:
         unix_time = str(json_time['Time']).strip('/Date()')
-        unix_time = unix_time.translate(None, string.letters)
-        gmt_time = time.strftime("%a %d %H:%M GMT", time.gmtime(int(unix_time) / 1000.0))
-        show_time.append(gmt_time)
-    return show_time
-
-
+        unix_time = int(unix_time) / 1000.0
+        show_time.append(unix_time)
+    for day, show in enumerate(show_time):
+        gmt_time = time.strftime("%H:%M GMT", time.gmtime(show))
+        gmt_date = time.strftime("%d", time.gmtime(show))
+        try:
+            next_gmt_date = time.strftime("%d", time.gmtime(int(show_time[day + 1])))
+            if day == 0:
+                print gmt_date
+                print gmt_time
+            if int(gmt_date) != int(next_gmt_date):
+                print next_gmt_date
+            else:
+                print gmt_time
+        except IndexError:
+            print gmt_time
 
 
 def json_parse_movies(cinema_id):
@@ -393,4 +404,4 @@ if __name__ == "__main__":
     # json_parse_movies('1071')
     # json_parse_cinema()
     # search_movies_from_cinema('zone', False)
-    json_parse_performances('h-HO00000094', '3D', '1071')
+    json_parse_performances('h-HO00000094', '3D', '3001')
