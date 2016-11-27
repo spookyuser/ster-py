@@ -141,18 +141,17 @@ def json_parse_performances(movie_id, show_type, cinema_id):
     performances_json = performances_request.json()
     for json_time in performances_json:
         unix_time = str(json_time['Time']).strip('/Date()')
-        unix_time = int(int(unix_time) / 1000.0)
+        unix_time = int(unix_time) / 1000
         show_time.append(unix_time)
 
     for index_a, index_b in zip(show_time, show_time[1:]):
-        print index_a, index_b
-        day = time.strftime("%d", time.gmtime(index_a))
-        next_index = time.strftime("%d", time.gmtime(index_b))
+        day = time.strftime("%a %d %b", time.gmtime(index_a))
+        next_index = time.strftime("%a %d %b", time.gmtime(index_b))
         hour = time.strftime("%H:%M", time.gmtime(index_a))
         if len(times) == 0:
             times.append(day)
             times.append(hour)
-        if int(day) == int(next_index):
+        if day == next_index:
             times.append(time.strftime("%H:%M", time.gmtime(index_b)))
         else:
             dates.append(times)
