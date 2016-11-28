@@ -1,3 +1,4 @@
+import re
 import time
 import string
 import omdb
@@ -17,7 +18,7 @@ class MovieObject:
         self.a = cinema_id_array
         self.t = movie_tags
         self.r = movie_rating
-        self.v = "http://www.sterkinekor.com/assets_video/%s/shi.mp4" % movie_id
+        self.v = get_trailer(movie_id)
 
 
 class CinemaObject:
@@ -241,6 +242,18 @@ def imdb_search(movie_name):
         return 0
 
 
+def get_trailer(movie_id):
+    # http://regexr.com/3a2p0
+    movie_about_request = requests.get('https://movies.sterkinekor.co.za/Browsing/Movies/Details/%s' % movie_id)
+    youtube_regex = re.compile(
+        r"""(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})""",
+        re.IGNORECASE)
+    youtube_id = re.search(youtube_regex, movie_about_request.text).groups()
+    youtube_url = 'www.youtube.com/watch?v={0}'.format(str(youtube_id[0]))
+    return youtube_url
+
+
+
 @greet.command()
 @click.argument('cinema')
 @click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
@@ -260,7 +273,6 @@ def checkprovince(**kwargs):
         if kwargs['province'].upper() in province.upper():
             print click.style('Showing cinemas in:', fg='green'),
             print click.style(province, fg='magenta')
-            # Make post request to find cinemas with this province
             cinema_array = json_parse_cinema(province_id)
             for index, cinema in enumerate(cinema_array):
                 print [index + 1], '--', cinema.n
@@ -270,7 +282,6 @@ def checkprovince(**kwargs):
             if cinema_choice.isdigit():
                 cinema_choice = int(cinema_choice)
                 cinema = cinema_array[cinema_choice - 1]
-                # Insert Kwargs Statement
                 pairs = print_movies_per_cinema(cinema.i, cinema.n, kwargs['imdbsort'])
                 display_choice(pairs, cinema)
                 return None
@@ -284,3 +295,4 @@ if __name__ == "__main__":
     # search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000094', '3D', '3001')
     # json_parse_provinces('cape')
+    # get_trailer('h-HO00000094')
