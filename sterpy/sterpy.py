@@ -266,6 +266,12 @@ def checkprovince(**kwargs):
             "Please enter a valid number"
 
 
+def json_parse_provinces():
+    provinces = {'0000000001': 'Eastern Cape', '0000000002': 'Free State', '0000000003': 'Gauteng',
+                 '0000000004': 'KwaZulu-Natal', '0000000005': 'Limpopo', '0000000006': 'Mpumalanga',
+                 '0000000007': 'Northern Cape', '0000000008': 'North West', '0000000009': 'Western Cape'}
+
+
 if __name__ == "__main__":
     # greet()
     # json_parse_cinema()
