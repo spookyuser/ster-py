@@ -50,7 +50,7 @@ def is_connected():
     return False
 
 
-def json_parse_cinema():
+def json_parse_cinema(specific_province):
     request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas')
     cinema_json = request.json()
     for cinema in cinema_json:
@@ -266,10 +266,18 @@ def checkprovince(**kwargs):
             "Please enter a valid number"
 
 
-def json_parse_provinces():
+def json_parse_provinces(province_search_word):
     provinces = {'0000000001': 'Eastern Cape', '0000000002': 'Free State', '0000000003': 'Gauteng',
                  '0000000004': 'KwaZulu-Natal', '0000000005': 'Limpopo', '0000000006': 'Mpumalanga',
                  '0000000007': 'Northern Cape', '0000000008': 'North West', '0000000009': 'Western Cape'}
+
+    for province_id, province in provinces.iteritems():
+        if province_search_word.upper() in province.upper():
+            # Make post request to find cinemas with this province
+            cinemas_province_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas',
+                                                     cookies={'visSelectedSiteGroup': province_id})
+            cinemas_provinces_json = cinemas_province_request.json()
+            print cinemas_provinces_json
 
 
 if __name__ == "__main__":
@@ -277,5 +285,6 @@ if __name__ == "__main__":
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    search_movies_from_cinema('zone', False)
+    # search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000094', '3D', '3001')
+    json_parse_provinces('cape')
