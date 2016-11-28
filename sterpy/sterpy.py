@@ -18,7 +18,6 @@ class MovieObject:
         self.a = cinema_id_array
         self.t = movie_tags
         self.r = movie_rating
-        self.v = get_trailer(movie_id)
 
 
 class CinemaObject:
@@ -229,7 +228,7 @@ def display_choice(pairs, found_cinema):
         elif command == 'GOOGLE':
             webbrowser.open("https://www.google.com/search?q=%s" % movie.n)
         elif command == 'TRAILER':
-            webbrowser.open(movie.v, new=0, autoraise=True)
+            webbrowser.open(get_trailer(movie.i), new=0, autoraise=True)
 
 
 def imdb_search(movie_name):
