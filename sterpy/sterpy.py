@@ -44,7 +44,6 @@ def greet():
     if not is_connected():
         print "No internet connection"
         exit(0)
-    json_parse_cinema()
     pass
 
 
@@ -242,6 +241,7 @@ def print_movies(movie_array, imdb_sort):
 
 
 def search_movies_from_cinema(cinema_search, imdb_sort):
+    json_parse_cinema()
     for cinema in cinema_array:
         if cinema.n.upper().find(cinema_search.upper()) != -1:
             pairs = print_movies_per_cinema(cinema.i, cinema.n, imdb_sort)
@@ -270,13 +270,20 @@ def display_choice(pairs, found_cinema):
         if command == 'EXIT':
             exit(0)
         elif command == 'BOOK':
+            # If there is only one option, choose it automatically
+            # TODO: Move selection to previous menu
             if movie.t is None:
                 json_parse_performances(movie.i, '2D', found_cinema.i)
+            elif len(movie.t) == 1:
+                json_parse_performances(movie.i, movie.t[0], found_cinema.i)
             else:
+                print '\nShow Types for:',
+                print click.style(movie.n, fg='magenta')
                 for index, tag in enumerate(movie.t):
-                    print index + 1, ' -- ', tag
-                show_type_selection = click.prompt('Pick a show type [number]', prompt_suffix='\n> ')
+                    print[index + 1], ' -- ', tag
+                show_type_selection = click.prompt('\nPick a show type [number] | exit', prompt_suffix='\n> ')
                 if show_type_selection.isdigit():
+                    show_type_selection = int(show_type_selection)
                     show_type = movie.t[show_type_selection - 1]
                     json_parse_performances(movie.i, show_type, found_cinema.i)
                 else:
@@ -411,9 +418,9 @@ def checkprovince(**kwargs):
 
 
 if __name__ == "__main__":
-    greet()
+    # greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    # search_movies_from_cinema('zone', False)
+    search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000094', '3D', '3001')
