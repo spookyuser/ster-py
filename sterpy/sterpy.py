@@ -44,8 +44,7 @@ def greet():
     if not is_connected():
         print "No internet connection"
         exit(0)
-    check_update_xml()
-    xml_parse_cinema()
+    json_parse_cinema()
     pass
 
 
@@ -183,7 +182,7 @@ def json_parse_types(movie_id, cinema_id):
                                  data={'Movies': movie_id, 'Cinemas': cinema_id})
     type_json = type_request.json()
     for movie_type in type_json:
-        type_array.append(str(movie_type['Name']).encode('utf-8'))
+        type_array.append(str(movie_type['Id']).encode('utf-8'))
     if len(type_array) == 1 and '2D' in type_array:
         type_array = None
     return type_array
@@ -254,7 +253,6 @@ def search_movies_from_cinema(cinema_search, imdb_sort):
 def display_choice(pairs, found_cinema):
     # TODO Probably better way to do this
     # TODO OR move this to the initial command
-    # TODO book 1-10
     choice = True
     while choice is True:
         # TODO Better phrasing
@@ -272,7 +270,17 @@ def display_choice(pairs, found_cinema):
         if command == 'EXIT':
             exit(0)
         elif command == 'BOOK':
-            get_performances(movie.i, found_cinema.i)
+            if movie.t is None:
+                json_parse_performances(movie.i, '2D', found_cinema.i)
+            else:
+                for index, tag in enumerate(movie.t):
+                    print index + 1, ' -- ', tag
+                show_type_selection = click.prompt('Pick a show type [number]', prompt_suffix='\n> ')
+                if show_type_selection.isdigit():
+                    show_type = movie.t[show_type_selection - 1]
+                    json_parse_performances(movie.i, show_type, found_cinema.i)
+                else:
+                    print 'Please enter a valid number'
         elif command == 'GOOGLE':
             webbrowser.open("https://www.google.com/search?q=%s" % movie.n)
         elif command == 'TRAILER':
@@ -374,11 +382,8 @@ def imdb_search(movie_name):
 
 @greet.command()
 @click.argument('cinema')
-@click.option('-f', '--forceupdate', is_flag=True, help='Forces an update on movie lists.')
 @click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
 def checkcinema(**kwargs):
-    if kwargs['forceupdate']:
-        download_new_files()
     search_movies_from_cinema(format(kwargs['cinema']), kwargs['imdbsort'])
 
 
@@ -406,9 +411,9 @@ def checkprovince(**kwargs):
 
 
 if __name__ == "__main__":
-    # greet()
+    greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
     # search_movies_from_cinema('zone', False)
-    json_parse_performances('h-HO00000094', '3D', '3001')
+    # json_parse_performances('h-HO00000094', '3D', '3001')
