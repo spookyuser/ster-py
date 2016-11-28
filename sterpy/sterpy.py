@@ -270,11 +270,11 @@ def checkprovince(**kwargs):
 
     for province_id, province in provinces.iteritems():
         if kwargs['province'].upper() in province.upper():
-            print click.style('Showing cinemas in:', fg='green'),
+            print click.style('\nShowing cinemas in:', fg='green'),
             print click.style(province, fg='magenta')
             cinema_array = json_parse_cinema(province_id)
             for index, cinema in enumerate(cinema_array):
-                print [index + 1], '--', cinema.n
+                print '  ', [index + 1], '--', cinema.n
 
             cinema_choice = click.prompt("\nEnter a Cinema [number]", prompt_suffix='\n> ')
 
