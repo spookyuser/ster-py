@@ -8,7 +8,6 @@ import requests
 
 __VERSION__ = '1.2.0'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-cinema_array = []
 
 
 class MovieObject:
@@ -51,6 +50,7 @@ def is_connected():
 
 
 def json_parse_cinema(specific_province):
+    cinema_array = []
     request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas')
     cinema_json = request.json()
     for cinema in cinema_json:
@@ -58,6 +58,7 @@ def json_parse_cinema(specific_province):
         cinema_id = cinema["Id"]
         new_cinema = CinemaObject(cinema_name, cinema_id)
         cinema_array.append(new_cinema)
+    return cinema_array
 
 
 def json_parse_performances(movie_id, show_type, cinema_id):
@@ -173,7 +174,7 @@ def print_movies(movie_array, imdb_sort):
 
 
 def search_movies_from_cinema(cinema_search, imdb_sort):
-    json_parse_cinema()
+    cinema_array = json_parse_cinema(None)
     for cinema in cinema_array:
         if cinema.n.upper().find(cinema_search.upper()) != -1:
             pairs = print_movies_per_cinema(cinema.i, cinema.n, imdb_sort)
