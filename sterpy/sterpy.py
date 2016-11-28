@@ -49,9 +49,13 @@ def is_connected():
     return False
 
 
-def json_parse_cinema(specific_province):
+def json_parse_cinema(province_id):
     cinema_array = []
-    request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas')
+    if province_id is not None:
+        cookie = {'visSelectedSiteGroup': province_id}
+    else:
+        cookie = {'visSelectedSiteGroup': 'All Cinema Locations'}
+    request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas', cookies=cookie)
     cinema_json = request.json()
     for cinema in cinema_json:
         cinema_name = cinema["Name"]
@@ -126,7 +130,7 @@ def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     movies_array = json_parse_movies(cinema_id)
 
     print ''
-    print click.style("Showing Movies For: ", fg='cyan'),
+    print click.style("Showing movies for: ", fg='cyan'),
     print click.style(cinema_name, fg='magenta')
 
     print_movies_array = movies_array
@@ -248,44 +252,35 @@ def checkcinema(**kwargs):
 @click.argument('province')
 @click.option('-s', '--imdbsort', is_flag=True, help='Sorts and displays movies based on imdb score.')
 def checkprovince(**kwargs):
-    province_array = []
-    for cinema in cinema_array:
-        if cinema.pn.upper().find(kwargs['province'].upper()) != -1:
-            province_array.append(cinema.n)
-    for count, province in enumerate(province_array):
-        print [count + 1], province
-
-    if not province_array:
-        print "No cinemas found"
-    else:
-        province_choice = click.prompt("\nEnter a Number", prompt_suffix='\n> ')
-        if province_choice.isdigit():
-            province_choice = int(province_choice)
-            click.clear()
-            search_movies_from_cinema(province_array[province_choice - 1], kwargs['imdbsort'])
-        else:
-            "Please enter a valid number"
-
-
-def json_parse_provinces(province_search_word):
     provinces = {'0000000001': 'Eastern Cape', '0000000002': 'Free State', '0000000003': 'Gauteng',
                  '0000000004': 'KwaZulu-Natal', '0000000005': 'Limpopo', '0000000006': 'Mpumalanga',
                  '0000000007': 'Northern Cape', '0000000008': 'North West', '0000000009': 'Western Cape'}
 
     for province_id, province in provinces.iteritems():
-        if province_search_word.upper() in province.upper():
+        if kwargs['province'].upper() in province.upper():
+            print click.style('Showing cinemas in:', fg='green'),
+            print click.style(province, fg='magenta')
             # Make post request to find cinemas with this province
-            cinemas_province_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas',
-                                                     cookies={'visSelectedSiteGroup': province_id})
-            cinemas_provinces_json = cinemas_province_request.json()
-            print cinemas_provinces_json
+            cinema_array = json_parse_cinema(province_id)
+            for index, cinema in enumerate(cinema_array):
+                print [index + 1], '--', cinema.n
+
+            cinema_choice = click.prompt("\nEnter a Cinema [number]", prompt_suffix='\n> ')
+
+            if cinema_choice.isdigit():
+                cinema_choice = int(cinema_choice)
+                cinema = cinema_array[cinema_choice - 1]
+                # Insert Kwargs Statement
+                pairs = print_movies_per_cinema(cinema.i, cinema.n, kwargs['imdbsort'])
+                display_choice(pairs, cinema)
+                return None
 
 
 if __name__ == "__main__":
-    # greet()
+    greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
     # search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000094', '3D', '3001')
-    json_parse_provinces('cape')
+    # json_parse_provinces('cape')
