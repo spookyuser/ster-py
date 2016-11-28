@@ -122,9 +122,7 @@ def json_parse_types(movie_id, cinema_id):
 
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
-    count = 0
     movies_array = json_parse_movies(cinema_id)
-    print_movies_array = []
 
     print ''
     print click.style("Showing Movies For: ", fg='cyan'),
