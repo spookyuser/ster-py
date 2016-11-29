@@ -124,7 +124,7 @@ def json_parse_movies(cinema_id):
         for movie in movie_json:
             movie_name = string.capwords(movie['Name'])
             movie_id = movie['Id']
-            movie_types = json_parse_types_test(movie_id, cinema_id)
+            movie_types = json_parse_types(movie_id, cinema_id)
             movie = MovieObject(movie_name, movie_id, None, movie_types, None)
             movies_array.append(movie)
             bar.update(1)
@@ -132,18 +132,13 @@ def json_parse_movies(cinema_id):
 
 
 def json_parse_types(movie_id, cinema_id):
-    # Needed for accurate show types, for some reason without the date param it leaves out some
-    date_type = time.strftime("%Y/%m/%d", time.gmtime())
     type_array = []
-    type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
-                                 data={'Movies': movie_id, 'Cinemas': cinema_id, 'Date': date_type})
-    if len(type_request.json()) is 0:
-        # Prestige movies respond to Date but Non prestige don't so I can't see a way to do this without two requests.
-        type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
-                                     data={'Movies': movie_id, 'Cinemas': cinema_id})
-    type_json = type_request.json()
-    for movie_type in type_json:
-        type_array.append(str(movie_type['Id']).encode('utf-8'))
+    type_list = ['2D', '3D', 'Prestige', 'IMAX 3D']
+    for show_type in type_list:
+        type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
+                                     data={'Movies': movie_id, 'Cinemas': cinema_id, 'ShowTypes': show_type})
+        if len(type_request.json()) > 0:
+            type_array.append(show_type)
     if len(type_array) == 1 and '2D' in type_array:
         type_array = None
     return type_array
@@ -308,25 +303,12 @@ def checkprovince(**kwargs):
                 return None
 
 
-def json_parse_types_test(movie_id, cinema_id):
-    type_array = []
-    type_list = ['2D', '3D', 'Prestige', 'IMAX 3D']
-    for show_type in type_list:
-        type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
-                                     data={'Movies': movie_id, 'Cinemas': cinema_id, 'ShowTypes': show_type})
-        if len(type_request.json()) > 0:
-            type_array.append(show_type)
-    if len(type_array) == 1 and '2D' in type_array:
-        type_array = None
-    return type_array
-
-
 if __name__ == "__main__":
-    # greet()
+    greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    search_movies_from_cinema('zone', False)
+    # search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000094', '3D', '1071')
     # json_parse_provinces('cape')
     # get_trailer('h-HO00000094')
