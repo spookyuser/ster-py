@@ -77,21 +77,22 @@ def json_parse_performances(movie_id, show_type, cinema_id):
     performances_json = performances_request.json()
     for json_time in performances_json:
         unix_time = str(json_time['Time']).strip('/Date()')
-        unix_time = int(unix_time) / 1000
+        # Static UTC+2 offset in seconds
+        unix_time = (int(unix_time) / 1000) + 7200
         show_time.append(unix_time)
 
     for index_a, index_b in zip(show_time, show_time[1:]):
-        day = time.strftime("%a %d %b", time.localtime(index_a))
-        next_index = time.strftime("%a %d %b", time.localtime(index_b))
-        hour = time.strftime("%H:%M", time.localtime(index_a))
+        day = time.strftime("%a %d %b", time.gmtime(index_a))
+        next_index = time.strftime("%a %d %b", time.gmtime(index_b))
+        hour = time.strftime("%H:%M", time.gmtime(index_a))
         if len(times) == 0:
             times.append(day)
             times.append(hour)
         if day == next_index:
-            times.append(time.strftime("%H:%M", time.localtime(index_b)))
+            times.append(time.strftime("%H:%M", time.gmtime(index_b)))
         else:
             dates.append(times)
-            times = [next_index, time.strftime("%H:%M", time.localtime(index_b))]
+            times = [next_index, time.strftime("%H:%M", time.gmtime(index_b))]
     dates.append(times)
     for index, date in enumerate(dates):
         print [index + 1], '--', date[0]
@@ -118,7 +119,7 @@ def json_parse_movies(cinema_id):
 
 def json_parse_types(movie_id, cinema_id):
     # Needed for accurate show types, for some reason without the date param it leaves out some
-    date_type = time.strftime("%Y/%m/%d", time.localtime())
+    date_type = time.strftime("%Y/%m/%d", time.gmtime())
     type_array = []
     type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
                                  data={'Movies': movie_id, 'Cinemas': cinema_id, 'Date': date_type})
