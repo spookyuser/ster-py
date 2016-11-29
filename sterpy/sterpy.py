@@ -10,6 +10,7 @@ import requests
 __VERSION__ = '1.2.0'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
+
 class MovieObject:
     def __init__(self, movie_name, movie_id, cinema_id_array, movie_tags, movie_rating):
         self.n = movie_name
@@ -81,18 +82,25 @@ def json_parse_performances(movie_id, show_type, cinema_id):
         unix_time = (int(unix_time) / 1000) + 7200
         show_time.append(unix_time)
 
-    for index_a, index_b in zip(show_time, show_time[1:]):
-        day = time.strftime("%a %d %b", time.gmtime(index_a))
-        next_index = time.strftime("%a %d %b", time.gmtime(index_b))
-        hour = time.strftime("%H:%M", time.gmtime(index_a))
-        if len(times) == 0:
-            times.append(day)
-            times.append(hour)
-        if day == next_index:
-            times.append(time.strftime("%H:%M", time.gmtime(index_b)))
-        else:
-            dates.append(times)
-            times = [next_index, time.strftime("%H:%M", time.gmtime(index_b))]
+    if len(show_time) > 1:
+        for index_a, index_b in zip(show_time, show_time[1:]):
+            day = time.strftime("%a %d %b", time.gmtime(index_a))
+            next_index = time.strftime("%a %d %b", time.gmtime(index_b))
+            hour = time.strftime("%H:%M", time.gmtime(index_a))
+            if len(times) == 0:
+                times.append(day)
+                times.append(hour)
+            if day == next_index:
+                times.append(time.strftime("%H:%M", time.gmtime(index_b)))
+            else:
+                dates.append(times)
+                times = [next_index, time.strftime("%H:%M", time.gmtime(index_b))]
+    else:
+        # If there is only one show time
+        day = time.strftime("%a %d %b", time.gmtime(show_time[0]))
+        hour = time.strftime("%H:%M", time.gmtime(show_time[0]))
+        times.append(day)
+        times.append(hour)
     dates.append(times)
     for index, date in enumerate(dates):
         print [index + 1], '--', date[0]
@@ -110,7 +118,7 @@ def json_parse_movies(cinema_id):
         for movie in movie_json:
             movie_name = string.capwords(movie['Name'])
             movie_id = movie['Id']
-            movie_types = json_parse_types(movie_id, cinema_id)
+            movie_types = json_parse_types_test(movie_id, cinema_id)
             movie = MovieObject(movie_name, movie_id, None, movie_types, None)
             movies_array.append(movie)
             bar.update(1)
@@ -294,13 +302,27 @@ def checkprovince(**kwargs):
                 return None
 
 
+def json_parse_types_test(movie_id, cinema_id):
+    type_array = []
+    type_list = ['2D', '3D', 'Prestige', 'IMAX 3D']
+    for show_type in type_list:
+        type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
+                                     data={'Movies': movie_id, 'Cinemas': cinema_id, 'ShowTypes': show_type})
+        if len(type_request.json()) > 0:
+            type_array.append(show_type)
+    if len(type_array) == 1 and '2D' in type_array:
+        type_array = None
+    return type_array
+
+
 if __name__ == "__main__":
-    greet()
+    # greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    # search_movies_from_cinema('zone', False)
-    # json_parse_performances('h-HO00000094', '3D', '3001')
+    search_movies_from_cinema('zone', False)
+    # json_parse_performances('h-HO00000094', '3D', '1071')
     # json_parse_provinces('cape')
     # get_trailer('h-HO00000094')
     # json_parse_types('h-HO00000094', '1071')
+    # type_test()
