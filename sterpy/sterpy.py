@@ -296,9 +296,9 @@ def checkprovince(**kwargs):
 
     for province_id, province in provinces.iteritems():
         if kwargs['province'].upper() in province.upper():
+            cinema_array = json_parse_cinema(province_id)
             print click.style('\nShowing cinemas in:', fg='green'),
             print click.style(province, fg='magenta')
-            cinema_array = json_parse_cinema(province_id)
             for index, cinema in enumerate(cinema_array):
                 print '  ', [index + 1], '--', cinema.n
 
@@ -313,11 +313,11 @@ def checkprovince(**kwargs):
 
 
 if __name__ == "__main__":
-    # greet()
+    greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    search_movies_from_cinema('zone', False)
+    # search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000106', '3D', '1071')
     # json_parse_provinces('cape')
     # get_trailer('h-HO00000094')
