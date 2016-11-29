@@ -21,7 +21,6 @@ class MovieObject:
 
 
 class CinemaObject:
-    # TODO create inherited province object
     def __init__(self, cinema_name, cinema_id):
         self.n = cinema_name
         self.i = cinema_id
@@ -87,7 +86,7 @@ def json_parse_performances(movie, show_type, cinema_id):
             # Some prestige movies are not at the exact same time as regular movies, so this check creates duplicates
             # where the time difference is less than 30 min, this is not full proof and will have to be changed if sk
             # decide to play prestige movies arbitrarily. The duplicates are removed in the next loop
-            # Quite ridiculous, however I see no - obvious -  way around this.
+            # Quite ridiculous, however I see no - obvious - way around this.
             time_diff = show_time[index + 1] - show
             if time_diff <= 1800:
                 show_time[index + 1] = show
@@ -121,7 +120,6 @@ def json_parse_performances(movie, show_type, cinema_id):
         movie_times = ', '.join(map(str, dates[index][1:]))
         print click.style('\t' + str(movie_times), fg='green')
     if click.confirm('\nDo you want to open the booking page?'):
-        # TODO Prevent autoplay
         webbrowser.open("https://movies.sterkinekor.co.za/Browsing/Movies/Details/%s" % movie.i, new=0, autoraise=True)
 
 
@@ -242,7 +240,7 @@ def display_choice(pairs, found_cinema):
             elif len(movie.t) == 1:
                 json_parse_performances(movie, movie.t[0], found_cinema.i)
             else:
-                print '\nShow Types for:',
+                print '\nShowing types for:',
                 print click.style(movie.n, fg='magenta')
                 for index, tag in enumerate(movie.t):
                     print[index + 1], ' -- ', tag
