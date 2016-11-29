@@ -237,7 +237,7 @@ def display_choice(pairs, found_cinema):
         elif command == 'BOOK':
             # TODO: Move 2D/3D selection to previous menu
             if movie.t is None:
-                json_parse_performances(movie.i, '2D', found_cinema.i)
+                json_parse_performances(movie, '2D', found_cinema.i)
             elif len(movie.t) == 1:
                 json_parse_performances(movie, movie.t[0], found_cinema.i)
             else:
