@@ -80,7 +80,6 @@ def json_parse_performances(movie, show_type, cinema_id):
         # Static UTC+2 offset in seconds
         unix_time = (int(unix_time) / 1000) + 7200
         show_time.append(unix_time)
-
     # Removing duplicates aka prestige movies
     show_time_no_dups = []
     for index, show in enumerate(show_time):
@@ -121,6 +120,9 @@ def json_parse_performances(movie, show_type, cinema_id):
         print [index + 1], '--', date[0]
         movie_times = ', '.join(map(str, dates[index][1:]))
         print click.style('\t' + str(movie_times), fg='green')
+    if click.confirm('\nDo you want to open the booking page?'):
+        # TODO Prevent autoplay
+        webbrowser.open("https://movies.sterkinekor.co.za/Browsing/Movies/Details/%s" % movie.i, new=0, autoraise=True)
 
 
 def json_parse_movies(cinema_id):
@@ -155,7 +157,6 @@ def json_parse_types(movie_id, cinema_id):
 
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     movies_array = json_parse_movies(cinema_id)
-
     print_movies_array = movies_array
     if imdb_sort:
         with click.progressbar(print_movies_array, label='Downloading IMDB data', ) as bar:
@@ -301,7 +302,6 @@ def checkprovince(**kwargs):
             print click.style(province, fg='magenta')
             for index, cinema in enumerate(cinema_array):
                 print '  ', [index + 1], '--', cinema.n
-
             cinema_choice = click.prompt("\nEnter a Cinema [number]", prompt_suffix='\n> ')
 
             if cinema_choice.isdigit():
@@ -314,12 +314,3 @@ def checkprovince(**kwargs):
 
 if __name__ == "__main__":
     greet()
-    # json_parse_cinema()
-    # json_parse_movies('1071')
-    # json_parse_cinema()
-    # search_movies_from_cinema('zone', False)
-    # json_parse_performances('h-HO00000106', '3D', '1071')
-    # json_parse_provinces('cape')
-    # get_trailer('h-HO00000094')
-    # json_parse_types('h-HO00000094', '1071')
-    # type_test()
