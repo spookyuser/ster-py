@@ -7,7 +7,7 @@ import click
 import webbrowser
 import requests
 
-__VERSION__ = '1.2.0'
+__VERSION__ = '2.0.0'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
@@ -29,7 +29,7 @@ class CinemaObject:
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version=__VERSION__)
 def greet():
-    """Flash sucks, CLIs don't!"""
+    """Whatever sterkinekor is using atm sucks, CLIs don't!"""
     if not is_connected():
         print "No internet connection"
         exit(0)
@@ -115,8 +115,11 @@ def json_parse_performances(movie, show_type, cinema_id):
         times.append(day)
         times.append(hour)
     dates.append(times)
+    print ''
+    print 'Showing movie times for:',
+    print click.style(movie.n, fg='magenta')
     for index, date in enumerate(dates):
-        print [index + 1], '--', date[0]
+        print '  ', [index + 1], '--', date[0]
         movie_times = ', '.join(map(str, dates[index][1:]))
         print click.style('\t' + str(movie_times), fg='green')
     if click.confirm('\nDo you want to open the booking page?'):
@@ -216,7 +219,6 @@ def search_movies_from_cinema(cinema_search, imdb_sort):
 
 def display_choice(pairs, found_cinema):
     # TODO Probably better way to do this
-    # TODO OR move this to the initial command
     choice = True
     while choice is True:
         # TODO Better phrasing
@@ -243,7 +245,7 @@ def display_choice(pairs, found_cinema):
                 print '\nShowing types for:',
                 print click.style(movie.n, fg='magenta')
                 for index, tag in enumerate(movie.t):
-                    print[index + 1], ' -- ', tag
+                    print '  ', [index + 1], ' -- ', tag
                 show_type_selection = click.prompt('\nPick a show type [number] | exit', prompt_suffix='\n> ')
                 if show_type_selection.isdigit():
                     show_type_selection = int(show_type_selection)
