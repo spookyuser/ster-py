@@ -18,7 +18,7 @@
 
    `ster-py checkprovince --imdbsort "western cape"`
 
-    `ster-py -h`
+   `ster-py -h`
 
 ---
 
@@ -58,20 +58,24 @@ This is kind of weird. The only reason it exists is because sterkinekor have gen
 
 I suppose I might as well show the parameters each accepts:
 
-    POST /QuickTickets/Cinemas
+   **POST /QuickTickets/Cinemas**
+   
     Cookie : visSelectedSiteGroup = province_id
 
-    POST /QuickTickets/Sessions
+   **POST /QuickTickets/Sessions**
+
     Showtypes: show_type
     Cinemas: cinema_id
     Movies: movie_id
 
-    POST /QuickTickets/Types
-    Cinemas: cinema_id
-    Movies: movie_id
+   **POST /QuickTickets/Types**
+   
+    Cinemas: cinema_id  
+    Movies: movie_id  
     Date: YY/MM/DD 0:0:0 [OPTIONAL]
 
-    POST /QuickTickets/Movies
+   **POST /QuickTickets/Movies**
+   
     Cinemas: cinema_id
 
 Indeed, it seems possible this could be written into a python wrapper of some sort.
