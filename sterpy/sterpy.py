@@ -101,16 +101,20 @@ def json_parse_performances(movie_id, show_type, cinema_id):
 
 
 def json_parse_movies(cinema_id):
+
     movies_array = []
     movie_request = requests.post(
         'https://movies.sterkinekor.co.za/Browsing/QuickTickets/Movies', data={'Cinemas': cinema_id})
     movie_json = movie_request.json()
-    for movie in movie_json:
-        movie_name = string.capwords(movie['Name'])
-        movie_id = movie['Id']
-        movie_types = json_parse_types(movie_id, cinema_id)
-        movie = MovieObject(movie_name, movie_id, None, movie_types, None)
-        movies_array.append(movie)
+    with click.progressbar(length=len(movie_json),
+                           label='Parsing movies') as bar:
+        for movie in movie_json:
+            movie_name = string.capwords(movie['Name'])
+            movie_id = movie['Id']
+            movie_types = json_parse_types(movie_id, cinema_id)
+            movie = MovieObject(movie_name, movie_id, None, movie_types, None)
+            movies_array.append(movie)
+            bar.update(1)
     return movies_array
 
 
@@ -250,7 +254,6 @@ def get_trailer(movie_id):
     youtube_id = re.search(youtube_regex, movie_about_request.text).groups()
     youtube_url = 'www.youtube.com/watch?v={0}'.format(str(youtube_id[0]))
     return youtube_url
-
 
 
 @greet.command()
