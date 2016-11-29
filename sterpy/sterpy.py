@@ -72,7 +72,7 @@ def json_parse_performances(movie_id, show_type, cinema_id):
     dates = []
     times = []
     show_time = []
-    performances_request = requests.post('http://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
+    performances_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
                                          data={'ShowTypes': show_type, 'Cinemas': cinema_id, 'Movies': movie_id},
                                          headers={'content-type': 'application/x-www-form-urlencoded'})
     performances_json = performances_request.json()
@@ -211,8 +211,7 @@ def display_choice(pairs, found_cinema):
         if command == 'EXIT':
             exit(0)
         elif command == 'BOOK':
-            # If there is only one option, choose it automatically
-            # TODO: Move selection to previous menu
+            # TODO: Move 2D/3D selection to previous menu
             if movie.t is None:
                 json_parse_performances(movie.i, '2D', found_cinema.i)
             elif len(movie.t) == 1:
