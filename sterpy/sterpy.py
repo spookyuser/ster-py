@@ -65,15 +65,14 @@ def json_parse_cinema(province_id):
     return cinema_array
 
 
-def json_parse_performances(movie_id, show_type, cinema_id):
+def json_parse_performances(movie, show_type, cinema_id):
     # TODO: There has to be a better way to do this.
     # https://stackoverflow.com/questions/4002598/python-list-how-to-read-the-previous-element-when-using-for-loop
-    # Do show type logic in the book method, IE which show, then here
     dates = []
     times = []
     show_time = []
     performances_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Sessions',
-                                         data={'ShowTypes': show_type, 'Cinemas': cinema_id, 'Movies': movie_id},
+                                         data={'ShowTypes': show_type, 'Cinemas': cinema_id, 'Movies': movie.i},
                                          headers={'content-type': 'application/x-www-form-urlencoded'})
     performances_json = performances_request.json()
     for json_time in performances_json:
@@ -82,9 +81,19 @@ def json_parse_performances(movie_id, show_type, cinema_id):
         unix_time = (int(unix_time) / 1000) + 7200
         show_time.append(unix_time)
 
-    # Removing duplicates
+    # Removing duplicates aka prestige movies
     show_time_no_dups = []
-    for show in show_time:
+    for index, show in enumerate(show_time):
+        try:
+            # Some prestige movies are not at the exact same time as regular movies, so this check creates duplicates
+            # where the time difference is less than 30 min, this is not full proof and will have to be changed if sk
+            # decide to play prestige movies arbitrarily. The duplicates are removed in the next loop
+            # Quite ridiculous, however I see no - obvious -  way around this.
+            time_diff = show_time[index + 1] - show
+            if time_diff <= 1800:
+                show_time[index + 1] = show
+        except IndexError:
+            pass
         if show not in show_time_no_dups:
             show_time_no_dups.append(show)
     show_time = show_time_no_dups
@@ -230,7 +239,7 @@ def display_choice(pairs, found_cinema):
             if movie.t is None:
                 json_parse_performances(movie.i, '2D', found_cinema.i)
             elif len(movie.t) == 1:
-                json_parse_performances(movie.i, movie.t[0], found_cinema.i)
+                json_parse_performances(movie, movie.t[0], found_cinema.i)
             else:
                 print '\nShow Types for:',
                 print click.style(movie.n, fg='magenta')
@@ -240,7 +249,7 @@ def display_choice(pairs, found_cinema):
                 if show_type_selection.isdigit():
                     show_type_selection = int(show_type_selection)
                     show_type = movie.t[show_type_selection - 1]
-                    json_parse_performances(movie.i, show_type, found_cinema.i)
+                    json_parse_performances(movie, show_type, found_cinema.i)
                 else:
                     print 'Please enter a valid number'
         elif command == 'GOOGLE':
@@ -304,12 +313,12 @@ def checkprovince(**kwargs):
 
 
 if __name__ == "__main__":
-    greet()
+    # greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    # search_movies_from_cinema('zone', False)
-    # json_parse_performances('h-HO00000094', '3D', '1071')
+    search_movies_from_cinema('zone', False)
+    # json_parse_performances('h-HO00000106', '3D', '1071')
     # json_parse_provinces('cape')
     # get_trailer('h-HO00000094')
     # json_parse_types('h-HO00000094', '1071')
