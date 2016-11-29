@@ -25,7 +25,7 @@
 ##Features
 * View movie times in your terminal!
 * Super quick access to what's showing in a particular cinema
-* Sorting by IMDBratings (takes a while)
+* Sorting by IMDB ratings (takes a while)
 * View trailers
 * Google search movies
 * Find cinemas by province
@@ -86,4 +86,4 @@ Because the website is so unstable and the api is mostly half baked, the updated
 
 It's pretty cool that all of this data is available. So I thought I might as well take advantage of that; especially because of how much I *kind of...* hate their website :)
 
-Also this is the first time I've ever released a python package on PyPi so if i've made any obvious mistakes, well anywhere, please tell me!
+Also this is the first time I've ever released a python package on PyPi so if I've made any obvious mistakes, well anywhere, please tell me!
