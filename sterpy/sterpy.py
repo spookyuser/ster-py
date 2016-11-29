@@ -10,7 +10,6 @@ import requests
 __VERSION__ = '1.2.0'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-
 class MovieObject:
     def __init__(self, movie_name, movie_id, cinema_id_array, movie_tags, movie_rating):
         self.n = movie_name
@@ -101,7 +100,6 @@ def json_parse_performances(movie_id, show_type, cinema_id):
 
 
 def json_parse_movies(cinema_id):
-
     movies_array = []
     movie_request = requests.post(
         'https://movies.sterkinekor.co.za/Browsing/QuickTickets/Movies', data={'Cinemas': cinema_id})
@@ -119,9 +117,15 @@ def json_parse_movies(cinema_id):
 
 
 def json_parse_types(movie_id, cinema_id):
+    # Needed for accurate show types, for some reason without the date param it leaves out some
+    date_type = time.strftime("%Y/%m/%d", time.gmtime())
     type_array = []
     type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
-                                 data={'Movies': movie_id, 'Cinemas': cinema_id})
+                                 data={'Movies': movie_id, 'Cinemas': cinema_id, 'Date': date_type})
+    if len(type_request.json()) is 0:
+        # Prestige movies respond to Date but Non prestige don't so I can't see a way to do this without two requests.
+        type_request = requests.post('https://movies.sterkinekor.co.za/Browsing/QuickTickets/Types',
+                                     data={'Movies': movie_id, 'Cinemas': cinema_id})
     type_json = type_request.json()
     for movie_type in type_json:
         type_array.append(str(movie_type['Id']).encode('utf-8'))
@@ -290,11 +294,12 @@ def checkprovince(**kwargs):
 
 
 if __name__ == "__main__":
-    greet()
+    # greet()
     # json_parse_cinema()
     # json_parse_movies('1071')
     # json_parse_cinema()
-    # search_movies_from_cinema('zone', False)
+    search_movies_from_cinema('zone', False)
     # json_parse_performances('h-HO00000094', '3D', '3001')
     # json_parse_provinces('cape')
     # get_trailer('h-HO00000094')
+    # json_parse_types('h-HO00000094', '1071')
