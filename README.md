@@ -68,7 +68,7 @@ I suppose I might as well show the parameters each accepts:
     Cinemas: cinema_id
     Movies: movie_id
 
-   **POST /QuickTickets/Types**
+  **POST /QuickTickets/Types**
    
     Cinemas: cinema_id  
     Movies: movie_id  
