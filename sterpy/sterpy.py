@@ -154,7 +154,9 @@ def print_movies(movie_array, imdb_sort):
         for movie in movie_array:
             pairs[count + 1] = movie
             rating = str(movie.r).strip("'")
-            if 0 <= movie.r <= 4.9:
+            if movie.r == 0:
+                print click.style('N/A', bg='white', fg='black'),
+            if 0.1 <= movie.r <= 4.9:
                 print click.style(rating, fg='red'),
             if 5 <= movie.r <= 7.9:
                 print click.style(rating, fg='yellow'),
