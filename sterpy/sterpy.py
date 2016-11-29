@@ -82,6 +82,12 @@ def json_parse_performances(movie_id, show_type, cinema_id):
         unix_time = (int(unix_time) / 1000) + 7200
         show_time.append(unix_time)
 
+    # Removing duplicates
+    show_time_no_dups = []
+    for show in show_time:
+        if show not in show_time_no_dups:
+            show_time_no_dups.append(show)
+    show_time = show_time_no_dups
     if len(show_time) > 1:
         for index_a, index_b in zip(show_time, show_time[1:]):
             day = time.strftime("%a %d %b", time.gmtime(index_a))
