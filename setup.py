@@ -34,7 +34,7 @@ setup(
     ],
     keywords='cli command python sterkinekor browser',
     packages=find_packages(),
-    install_requires=['click', 'omdb', 'colorama'],
+    install_requires=['click', 'omdb', 'colorama', 'requests'],
     entry_points={
         'console_scripts': [
             'ster-py=sterpy:main',
