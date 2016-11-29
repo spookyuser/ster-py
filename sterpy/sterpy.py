@@ -133,16 +133,15 @@ def json_parse_types(movie_id, cinema_id):
 def print_movies_per_cinema(cinema_id, cinema_name, imdb_sort):
     movies_array = json_parse_movies(cinema_id)
 
-    print ''
-    print click.style("Showing movies for: ", fg='cyan'),
-    print click.style(cinema_name, fg='magenta')
-
     print_movies_array = movies_array
     if imdb_sort:
         with click.progressbar(print_movies_array, label='Downloading IMDB data', ) as bar:
             for movie in bar:
                 movie.r = imdb_search(movie.n)
         print_movies_array = sorted(print_movies_array, key=lambda movie: movie.r, reverse=True)
+    print ''
+    print click.style("Showing movies for: ", fg='cyan'),
+    print click.style(cinema_name, fg='magenta')
     pairs = print_movies(print_movies_array, imdb_sort)
     return pairs
 
