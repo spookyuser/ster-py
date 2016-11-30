@@ -11,8 +11,6 @@ import requests.packages.urllib3
 __VERSION__ = '2.0.1'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 requests.packages.urllib3.disable_warnings()
-
-
 # Users on python 2.7.6 repeatedly show insecure warnings
 
 
