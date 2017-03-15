@@ -1,9 +1,9 @@
-#Ster-py
+# Ster-py
 *A tiny python command line browser for sterkinekor*
 
 ---
 
-##Usage:
+## Usage:
   `ster-py checkinema eastgate`
 
   ![basic](https://i.imgur.com/8df8C2f.png)
@@ -22,7 +22,7 @@
 
 ---
 
-##Features
+## Features
 * View movie times in your terminal!
 * Super quick access to what's showing in a particular cinema
 * Sorting by IMDB ratings (takes a while)
@@ -33,7 +33,7 @@
 
 ---
 
-##Future updates
+## Future updates
 _(depending on how bored I am)_
 * ~~Open a youtube trailer in browser~~
 * ~~Open a google search of movie in browser~~
@@ -42,13 +42,13 @@ _(depending on how bored I am)_
 * List all movies by IMDB rating
 * Initiate booking process (probably definitely not possible)
 
-##Installation
+## Installation
 `pip install ster-py`
 
 Currently only supporting python 2.7 :(
 
 ---
-###Sidenote
+### Sidenote
 This is kind of weird. The only reason it exists is because sterkinekor have generously(?) left all their ~~xml~~ Json feeds open. The ones I used in particular are:
 
      https://movies.sterkinekor.co.za/Browsing/QuickTickets/Cinemas
